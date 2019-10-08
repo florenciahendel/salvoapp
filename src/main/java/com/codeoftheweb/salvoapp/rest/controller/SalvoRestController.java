@@ -1,0 +1,66 @@
+package com.codeoftheweb.salvoapp.rest.controller;
+
+import com.codeoftheweb.salvoapp.model.Game;
+import com.codeoftheweb.salvoapp.model.GamePlayer;
+import com.codeoftheweb.salvoapp.model.Ship;
+import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
+import com.codeoftheweb.salvoapp.repository.GameRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api")
+public class SalvoRestController {
+
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Autowired
+    private GamePlayerRepository gamePlayerRepository;
+
+
+    @RequestMapping("/games")
+    public List<Map<String, Object>> getGames() {
+        return gameRepository.findAll().stream().map(Game::gameDTO).collect(Collectors.toList());
+    }
+
+    @RequestMapping("/game_view/{gamePlayerId}")
+    public Map<String, Object> getGameView(@PathVariable long gamePlayerId) {
+        return this.gameViewDTO(gamePlayerRepository.findById(gamePlayerId).orElse(null));
+    }
+
+    private Map<String, Object> gameViewDTO(GamePlayer gamePlayer) {
+        //Instancia un objeto de clase Map, llamado dto (podría llamarse de cualquier manera),
+        // lo construye como un LinkedHashMap,
+        // declara un método para pasarle información que obtiene del GamePlayer que recibe por parámetro,
+        // y gestiona la respuesta si el GamePLayer no existiera (a través del else)
+
+        Map<String, Object> dto = new LinkedHashMap<>();
+
+        if (gamePlayer != null) {
+            dto.put("id", gamePlayer.getGame().getId());
+            dto.put("creationDate", gamePlayer.getGame().getCreationDate());
+            dto.put("player", gamePlayer.getPlayer().getUserName());
+            //Al final de esta función debería poner un filtro
+            // para que no me mostraran los dos players, sólo el oponente,
+            // y en vez de llamarse "gamePlayer" debería ser "opponent"
+            // .filter(x -> x.getPlayer().getUserName()!=y aca debería poder tener el valor de "player" para comparar)
+
+            dto.put("gamePlayer", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
+            dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
+        } else {
+            dto.put("error", "no such game");
+        }
+        return dto;
+    }
+}
+
+
+
