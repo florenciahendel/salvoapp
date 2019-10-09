@@ -48,12 +48,9 @@ public class SalvoRestController {
             dto.put("id", gamePlayer.getGame().getId());
             dto.put("creationDate", gamePlayer.getGame().getCreationDate());
             dto.put("player", gamePlayer.getPlayer().getUserName());
-            //Al final de esta función debería poner un filtro
-            // para que no me mostraran los dos players, sólo el oponente,
-            // y en vez de llamarse "gamePlayer" debería ser "opponent"
-            // .filter(x -> x.getPlayer().getUserName()!=y aca debería poder tener el valor de "player" para comparar)
-
-            dto.put("gamePlayer", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
+            //dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
+            //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
+            dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName()!=gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerDTO));
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
         } else {
             dto.put("error", "no such game");
