@@ -35,9 +35,11 @@ public class GamePlayer {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
     private List<Ship> ships = new ArrayList<>();
 
+    @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
+    private List<Salvo> salvoes = new ArrayList<Salvo>();
 
     /*-----
     METODOS
@@ -94,6 +96,15 @@ public class GamePlayer {
 
     public List<Ship> getShips() {
         return this.ships;
+    }
+
+    public void addSalvo(Salvo salvo) {
+        this.salvoes.add(salvo);
+        salvo.setGamePlayer(this);
+    }
+
+    public List<Salvo> getSalvoes() {
+        return this.salvoes;
     }
 
     //DTO (data transfer object) para administrar la info de GamePlayer
