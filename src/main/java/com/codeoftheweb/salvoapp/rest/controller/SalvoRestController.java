@@ -54,6 +54,9 @@ public class SalvoRestController {
             //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
             dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerUserNameDTO));
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
+            dto.put("salvoes", gamePlayer.getGame().getGamePlayers()
+                    .stream().flatMap(gp -> gp.getSalvoes()
+                            .stream().map(salvo -> salvo.salvoDTO())));
         } else {
             dto.put("error", "no such game");
         }
