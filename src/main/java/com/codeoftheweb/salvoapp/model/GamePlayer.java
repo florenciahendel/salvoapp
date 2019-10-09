@@ -103,4 +103,12 @@ public class GamePlayer {
         dto.put("player", this.getPlayer().playerDTO());
         return dto;
     }
+
+    //Solo sirve para filtrar y que no me muestre el ID de gamePlayer
+    public Map<String, Object> gamePlayerUserNameDTO() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+
+        dto.put("player", this.getPlayer().getUserName());
+        return dto;
+    }
 }

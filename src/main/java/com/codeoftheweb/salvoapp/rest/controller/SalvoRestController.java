@@ -45,12 +45,13 @@ public class SalvoRestController {
         Map<String, Object> dto = new LinkedHashMap<>();
 
         if (gamePlayer != null) {
-            dto.put("id", gamePlayer.getGame().getId());
-            dto.put("creationDate", gamePlayer.getGame().getCreationDate());
+            dto.put("gameId", gamePlayer.getGame().getId());
+            dto.put("gameCreationDate", gamePlayer.getGame().getCreationDate());
             dto.put("player", gamePlayer.getPlayer().getUserName());
             //dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
             //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
-            dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName()!=gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerDTO));
+            dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerUserNameDTO));
+
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
         } else {
             dto.put("error", "no such game");

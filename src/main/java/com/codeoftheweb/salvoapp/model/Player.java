@@ -101,4 +101,5 @@ public class Player {
         dto.put("username", this.getUserName());
         return dto;
     }
+
 }
