@@ -33,7 +33,9 @@ public class SalvoRestController {
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getGameView(@PathVariable long gamePlayerId) {
+
         return this.gameViewDTO(gamePlayerRepository.findById(gamePlayerId).orElse(null));
+
     }
 
     private Map<String, Object> gameViewDTO(GamePlayer gamePlayer) {
@@ -48,7 +50,7 @@ public class SalvoRestController {
             dto.put("gameId", gamePlayer.getGame().getId());
             dto.put("gameCreationDate", gamePlayer.getGame().getCreationDate());
             dto.put("player", gamePlayer.getPlayer().getUserName());
-            //dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
+            dto.put("playersInThisGame", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
             //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
             dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerUserNameDTO));
 
