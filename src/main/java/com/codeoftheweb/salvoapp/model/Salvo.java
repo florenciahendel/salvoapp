@@ -79,8 +79,9 @@ public class Salvo {
     //DTO (data transfer object) para administrar la info de Salvo
     public Map<String, Object> salvoDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("turn", this.getTurn());
         dto.put("player", this.getGamePlayer().getPlayer().getId());
+        dto.put("turn", this.getTurn());
+
         dto.put("locations", this.getLocations());
         return dto;
     }
