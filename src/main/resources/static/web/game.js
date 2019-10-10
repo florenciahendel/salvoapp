@@ -42,7 +42,7 @@ $(function() {
         }
 
     // genera el HTML de las filas (depende de getColumnsHtml)
-    function getRowsHtml(location, color) {
+    function getRowsHtml(locations, color) {
         let html = "";
         for (let i = 0; i < letters.length; i ++) {
             html = html + "<tr><th class='table-dark text-center align-middle'>" + letters[i] + "</th>" + getColumnsHtml(i,locations, color) + "</tr>";
@@ -106,11 +106,11 @@ $(function() {
     function loadData() {
         $.get("/api/game_view/"+urlParams.get('gp'))
             .done(function(data) {
-               setShipLocations(data);
-                               setSalvoLocations(data);
-                               showPlayersData(data);
-                               renderShipTable(shipLocations);
-                               renderSalvoTable(salvoLocations);
+                setShipLocations(data);
+                setSalvoLocations(data);
+                showPlayersData(data);
+                renderShipTable(shipLocations);
+                renderSalvoTable(salvoLocations);
             })
             .fail(function( jqXHR, textStatus ) {
                 alert( "Failed: " + textStatus );
