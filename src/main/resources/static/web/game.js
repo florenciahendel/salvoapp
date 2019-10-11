@@ -10,8 +10,14 @@ $(function() {
     // posiciones de todos los barcos del jugador
     let locations = [];
 
-    // posiciones de todos los salvos lanzados
-        let salvoLocations = [];
+    //Definimos el color de las casillas de hit ships
+    const colorHit = "red";
+
+    // posiciones de todos los salvos propios lanzados
+    let salvoLocations = [];
+
+    // posiciones de todos los salvos contrarios lanzados
+    let salvoLocationsEnemy= [];
 
     // genera el HTML de los encabezados de la grilla
     function getHeadersHtml(headers) {
@@ -26,14 +32,20 @@ $(function() {
         document.getElementById(numbersId).innerHTML = html;
     }
 
-    // genera el HTML de las columnas
-    function getColumnsHtml(i, locations, color) {
+    // genera el HTML de las columnas para los Ships
+        function getColumnsHtmlForShips(i, locations, color) {
             let html = "";
-            for (let j = 0; j < numbers.length; j++) {
+                        for (let j = 0; j < numbers.length; j++) {
                 let cellColor = "lightblue";
+                let text= "";
                 for (let k = 0; k < locations.length; k++) {
                     if (locations[k] == letters[i] + numbers[j]) {
                         cellColor = color;
+                        for(let l = 0; l< salvoLocationsEnemy.length; l ++) {
+                            if(salvoLocationsEnemy[l].location == letters[i] + numbers[j]){
+                                cellColor = colorHit;
+                            }
+                        }
                     }
                 }
                 html = html + "<td style='background-color: " + cellColor + "'></td>";
@@ -41,33 +53,51 @@ $(function() {
             return html;
         }
 
+        // genera el HTML de las columnas para los Salvoes
+            function getColumnsHtmlForSalvo(i, locations, color) {
+                let html = "";
+                for (let j = 0; j < numbers.length; j++) {
+                    let cellColor = "lightblue";
+                    let text= "";
+                    for (let k = 0; k < locations.length; k++) {
+                        if (locations[k].location == letters[i] + numbers[j]) {
+                            cellColor = color;
+                            text= locations[k].turno;
+                        }
+                    }
+                    html = html + "<td style='background-color: " + cellColor + "'>"+text+"</td>";
+                }
+                return html;
+            }
+
     // genera el HTML de las filas (depende de getColumnsHtml)
-    function getRowsHtml(locations, color) {
-        let html = "";
-        for (let i = 0; i < letters.length; i ++) {
-            html = html + "<tr><th class='table-dark text-center align-middle'>" + letters[i] + "</th>" + getColumnsHtml(i,locations, color) + "</tr>";
+        function getRowsHtml(locations, color, functionToRender) {
+            let html = "";
+            for (let i = 0; i < letters.length; i++) {
+                html = html + "<tr><th>" + letters[i] + "</th>" + functionToRender(i, locations, color) + "</tr>";
+            }
+            return html;
         }
-        return html;
-    }
 
 
     // dibuja las filas de la grilla
-    function renderRows(locations, rowsId, color) {
-            var html = getRowsHtml(locations, color);
+        function renderRows(locations, rowsId, color, functionToRender) {
+            var html = getRowsHtml(locations, color, functionToRender);
             document.getElementById(rowsId).innerHTML = html;
         }
 
     // dibuja la grilla de barcos
-    function renderShipTable(shipLocations) {
-        renderHeaders("ship-grid-numbers");
-        renderRows(shipLocations, "ship-grid-rows", "gray");
-    }
+        function renderShipTable(shipLocations) {
+            renderHeaders("ship-grid-numbers");
+            renderRows(shipLocations, "ship-grid-rows", "gray", getColumnsHtmlForShips);
+        }
 
-    // dibuja la grilla de salvos
-    function renderSalvoTable(salvoLocations) {
-        renderHeaders("salvo-grid-numbers");
-        renderRows(salvoLocations, "salvo-grid-rows", "orange");
-    }
+    // dibuja la grilla de salvoes
+        function renderSalvoTable(salvoLocations) {
+            renderHeaders("salvo-grid-numbers");
+            renderRows(salvoLocations, "salvo-grid-rows", "orange", getColumnsHtmlForSalvo);
+        }
+
     // muestra los datos de los jugadores de la partida
     function showPlayersData(data) {
         let thisPlayer;
@@ -95,12 +125,27 @@ $(function() {
     }
 
     // recibe los datos del gameplayer y setea en el array locations las posiciones de todos los salvos lanzados
-    function setSalvoLocations(data) {
-        mappedLocations = data.salvoes.map(function (salvo) {
-            return salvo.locations
-        });
-        salvoLocations = [].concat.apply([], mappedLocations);
-    }
+        function setSalvoLocations(data) {
+            mappedLocations = data.salvoes.map(function (salvo) {
+                let valueToReturn = [];
+                salvo.locations.forEach((item, index ) => {
+                    valueToReturn.push({location: item, turno: salvo.turn});
+                });
+                return valueToReturn;
+            });
+            salvoLocations = [].concat.apply([], mappedLocations);
+        }
+
+        function setSalvoLocationsEnemy(data) {
+                mappedLocations = data.enemySalvoes.map(function (salvo) {
+                    let valueToReturn = [];
+                    salvo.locations.forEach((item, index ) => {
+                        valueToReturn.push({location: item, turno: salvo.turn});
+                    });
+                    return valueToReturn;
+                });
+                salvoLocationsEnemy = [].concat.apply([], mappedLocations);
+            }
 
     // carga los datos del gameplayer según el parámetro 'gp' en la URL y llama a los métodos que dibujan la grilla
     function loadData() {
@@ -108,6 +153,7 @@ $(function() {
             .done(function(data) {
                 setShipLocations(data);
                 setSalvoLocations(data);
+                setSalvoLocationsEnemy(data);
                 showPlayersData(data);
                 renderShipTable(shipLocations);
                 renderSalvoTable(salvoLocations);

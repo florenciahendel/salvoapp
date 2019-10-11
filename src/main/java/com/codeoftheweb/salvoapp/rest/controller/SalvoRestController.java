@@ -2,6 +2,7 @@ package com.codeoftheweb.salvoapp.rest.controller;
 
 import com.codeoftheweb.salvoapp.model.Game;
 import com.codeoftheweb.salvoapp.model.GamePlayer;
+import com.codeoftheweb.salvoapp.model.Salvo;
 import com.codeoftheweb.salvoapp.model.Ship;
 import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,6 +31,18 @@ public class SalvoRestController {
     @RequestMapping("/games")
     public List<Map<String, Object>> getGames() {
         return gameRepository.findAll().stream().map(Game::gameDTO).collect(Collectors.toList());
+    }
+
+    private List<Map> shipsList(Set<Ship> ships) {
+        return ships.stream()
+                .map(ship -> ship.shipDTO())
+                .collect(Collectors.toList());
+    }
+
+    private List<Map> salvoesList(Set<Salvo> salvoes) {
+        return salvoes.stream()
+                .map(salvo -> salvo.salvoDTO())
+                .collect(Collectors.toList());
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
@@ -57,6 +71,9 @@ public class SalvoRestController {
             dto.put("salvoes", gamePlayer.getGame().getGamePlayers()
                     .stream().flatMap(gp -> gp.getSalvoes()
                             .stream().map(salvo -> salvo.salvoDTO())));
+            dto.put("enemySalvoes", salvoesList(gamePlayer.getGame().getGamePlayers().stream()
+                    .filter(gp -> !gp.getId().equals(gamePlayerID)).findFirst()
+                    .orElseThrow(() -> new RuntimeException()).getSalvoes()));
         } else {
             dto.put("error", "no such game");
         }
