@@ -25,6 +25,8 @@ public class Game {
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
 
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Score> scores = new HashSet<>();
     /*-----
     METODOS
     -----*/
@@ -66,6 +68,16 @@ public class Game {
         //al gamePlayer ingresado se le agrega este game mediante su setter en la clase GamePlayer
         gamePlayer.setGame(this);
     }
+
+    public Set<Score> getScores() {
+        return this.scores;
+    }
+
+    public void addScore(Score score) {
+        this.scores.add(score);
+        score.setGame(this);
+    }
+
 
     //método que retorna todos los players relacionados con el game a partir de los gamePlayers
     public List<Player> getPlayers() {

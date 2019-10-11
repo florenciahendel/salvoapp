@@ -28,6 +28,8 @@ public class Player {
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
 
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Score> scores = new HashSet<>();
     /*-----
     METODOS
     -----*/
@@ -78,6 +80,23 @@ public class Player {
 
     public Set<GamePlayer> getGamePlayers() {
         return this.gamePlayers;
+    }
+
+
+    public Set<Score> getScores() {
+        return this.scores;
+    }
+
+    public void addScore(Score score) {
+        this.scores.add(score);
+        score.setPlayer(this);
+    }
+
+    public Score getScoreByGame(Game game) {
+        return this.scores.stream()
+                .filter(score -> score.getGame().getId() == game.getId())
+                .findFirst()
+                .orElse(null);
     }
 
     //método para establecer la relación entre un objeto Player y un objeto GamePlayer
