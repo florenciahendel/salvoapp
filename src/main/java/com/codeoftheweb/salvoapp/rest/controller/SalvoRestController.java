@@ -33,13 +33,13 @@ public class SalvoRestController {
         return gameRepository.findAll().stream().map(Game::gameDTO).collect(Collectors.toList());
     }
 
-    private List<Map> shipsList(Set<Ship> ships) {
+    private Set<Map> shipsList(Set<Ship> ships) {
         return ships.stream()
                 .map(ship -> ship.shipDTO())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    private List<Map> salvoesList(Set<Salvo> salvoes) {
+    private List<Map> salvoesList(List<Salvo> salvoes) {
         return salvoes.stream()
                 .map(salvo -> salvo.salvoDTO())
                 .collect(Collectors.toList());
@@ -66,14 +66,16 @@ public class SalvoRestController {
             dto.put("player", gamePlayer.getPlayer().getUserName());
             dto.put("playersInThisGame", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
             //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
-            dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream().filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName()).map(GamePlayer::gamePlayerUserNameDTO));
+            dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream()
+            .filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName())
+            .map(GamePlayer::gamePlayerUserNameDTO));
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
-            dto.put("salvoes", gamePlayer.getGame().getGamePlayers()
-                    .stream().flatMap(gp -> gp.getSalvoes()
-                            .stream().map(salvo -> salvo.salvoDTO())));
+            dto.put("salvoes", gamePlayer.getGame().getGamePlayers().stream()
+            .flatMap(gp -> gp.getSalvoes().stream()
+            .map(salvo -> salvo.salvoDTO())));
             dto.put("enemySalvoes", salvoesList(gamePlayer.getGame().getGamePlayers().stream()
-                    .filter(gp -> !gp.getId().equals(gamePlayerID)).findFirst()
-                    .orElseThrow(() -> new RuntimeException()).getSalvoes()));
+            .filter(gp -> gp.getId() != gamePlayer.getId()).findFirst()
+            .orElseThrow(() -> new RuntimeException()).getSalvoes()));
         } else {
             dto.put("error", "no such game");
         }
