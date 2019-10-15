@@ -84,6 +84,13 @@ public class Game {
         return this.gamePlayers.stream().map(gp -> gp.getPlayer()).collect(Collectors.toList());
     }
 
+
+    public Score getScoreByPlayer(Player player) {
+        return this.scores.stream()
+                .filter(score -> score.getPlayer().getId() == player.getId())
+                .findAny()
+                .orElse(null);
+    }
     //DTO (data transfer object) para administrar la info de Game
     public Map<String, Object> gameDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
@@ -92,5 +99,6 @@ public class Game {
         dto.put("gamePlayers", this.getGamePlayers().stream().map(GamePlayer::gamePlayerDTO).collect(Collectors.toList()));
         return dto;
     }
+
 
 }

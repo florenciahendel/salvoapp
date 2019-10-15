@@ -1,9 +1,6 @@
 package com.codeoftheweb.salvoapp.rest.controller;
 
-import com.codeoftheweb.salvoapp.model.Game;
-import com.codeoftheweb.salvoapp.model.GamePlayer;
-import com.codeoftheweb.salvoapp.model.Salvo;
-import com.codeoftheweb.salvoapp.model.Ship;
+import com.codeoftheweb.salvoapp.model.*;
 import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +41,13 @@ public class SalvoRestController {
                 .map(salvo -> salvo.salvoDTO())
                 .collect(Collectors.toList());
     }
+
+//    private List <Map> scoresList (List<Player>playerScores){
+//        return playerScores.stream ()
+//                .map(playerScore -> playerScore.scorePlayerDTO()).collect(Collectors.toList());
+//
+//    }
+
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getGameView(@PathVariable long gamePlayerId) {

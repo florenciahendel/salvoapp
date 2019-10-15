@@ -99,6 +99,9 @@ public class Player {
                 .orElse(null);
     }
 
+
+
+
     //método para establecer la relación entre un objeto Player y un objeto GamePlayer
     public void addGamePlayer(GamePlayer gamePlayer) {
         //se agrega el gamePlayer que ingresa como parámetro al set declarado en los atributos
@@ -118,7 +121,7 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("username", this.getUserName());
-        return dto;
+                return dto;
     }
 
 }
