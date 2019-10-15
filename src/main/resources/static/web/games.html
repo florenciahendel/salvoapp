@@ -15,7 +15,7 @@
             <li v-for="game in games" class="pt-2">Game no. {{game.id}} created on {{game.created}}
                 <p>Players:</p>
                 <ul>
-                    <li v-for="i in game.gamePlayers">{{i.player.email}}</li>
+                    <li v-for="i in game.gamePlayers">{{i.player.username}}</li>
                 </ul>
             </li>
         </ul>
