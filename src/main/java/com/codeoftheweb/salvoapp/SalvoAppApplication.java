@@ -4,6 +4,7 @@ import com.codeoftheweb.salvoapp.model.*;
 import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
 import com.codeoftheweb.salvoapp.repository.PlayerRepository;
+import com.codeoftheweb.salvoapp.repository.ScoreRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,7 @@ public class SalvoAppApplication {
     public CommandLineRunner initData(PlayerRepository playerRepository
             , GameRepository gameRepository
             , GamePlayerRepository gamePlayerRepository
+            , ScoreRepository scoreRepository
     ) {
         return (args) -> {
 
@@ -41,22 +43,22 @@ public class SalvoAppApplication {
             Game game7 = gameRepository.save(new Game(LocalDateTime.now().plusHours(6)));
             Game game8 = gameRepository.save(new Game(LocalDateTime.now().plusHours(7)));
 
-            //LocalDateTime.now de GamePlayer debería tener en cuenta el creationDate de los juegos
+            //LocalDateTime.now de GamePlayer debe tener en cuenta el creationDate de los juegos
             // para que un jugador no se una a un juego antes de que dicho juego sea creado
-            GamePlayer gp1 = gamePlayerRepository.save(new GamePlayer(game1, jack, LocalDateTime.now()));
-            GamePlayer gp2 = gamePlayerRepository.save(new GamePlayer(game1, chloe, LocalDateTime.now()));
-            GamePlayer gp3 = gamePlayerRepository.save(new GamePlayer(game2, jack, LocalDateTime.now()));
-            GamePlayer gp4 = gamePlayerRepository.save(new GamePlayer(game2, chloe, LocalDateTime.now()));
-            GamePlayer gp5 = gamePlayerRepository.save(new GamePlayer(game3, chloe, LocalDateTime.now()));
-            GamePlayer gp6 = gamePlayerRepository.save(new GamePlayer(game3, tony, LocalDateTime.now()));
-            GamePlayer gp7 = gamePlayerRepository.save(new GamePlayer(game4, chloe, LocalDateTime.now()));
-            GamePlayer gp8 = gamePlayerRepository.save(new GamePlayer(game4, jack, LocalDateTime.now()));
-            GamePlayer gp9 = gamePlayerRepository.save(new GamePlayer(game5, tony, LocalDateTime.now()));
-            GamePlayer gp10 = gamePlayerRepository.save(new GamePlayer(game5, jack, LocalDateTime.now()));
-            GamePlayer gp11 = gamePlayerRepository.save(new GamePlayer(game6, kim, LocalDateTime.now()));
-            GamePlayer gp12 = gamePlayerRepository.save(new GamePlayer(game7, tony, LocalDateTime.now()));
-            GamePlayer gp13 = gamePlayerRepository.save(new GamePlayer(game8, kim, LocalDateTime.now()));
-            GamePlayer gp14 = gamePlayerRepository.save(new GamePlayer(game8, tony, LocalDateTime.now()));
+            GamePlayer gp1 = gamePlayerRepository.save(new GamePlayer(game1, jack, LocalDateTime.from(game1.getCreationDate())));
+            GamePlayer gp2 = gamePlayerRepository.save(new GamePlayer(game1, chloe, LocalDateTime.from(game1.getCreationDate())));
+            GamePlayer gp3 = gamePlayerRepository.save(new GamePlayer(game2, jack, LocalDateTime.from(game2.getCreationDate())));
+            GamePlayer gp4 = gamePlayerRepository.save(new GamePlayer(game2, chloe, LocalDateTime.from(game2.getCreationDate())));
+            GamePlayer gp5 = gamePlayerRepository.save(new GamePlayer(game3, chloe, LocalDateTime.from(game3.getCreationDate())));
+            GamePlayer gp6 = gamePlayerRepository.save(new GamePlayer(game3, tony, LocalDateTime.from(game3.getCreationDate())));
+            GamePlayer gp7 = gamePlayerRepository.save(new GamePlayer(game4, chloe, LocalDateTime.from(game4.getCreationDate())));
+            GamePlayer gp8 = gamePlayerRepository.save(new GamePlayer(game4, jack, LocalDateTime.from(game4.getCreationDate())));
+            GamePlayer gp9 = gamePlayerRepository.save(new GamePlayer(game5, tony, LocalDateTime.from(game5.getCreationDate())));
+            GamePlayer gp10 = gamePlayerRepository.save(new GamePlayer(game5, jack, LocalDateTime.from(game5.getCreationDate())));
+            GamePlayer gp11 = gamePlayerRepository.save(new GamePlayer(game6, kim, LocalDateTime.from(game6.getCreationDate())));
+            GamePlayer gp12 = gamePlayerRepository.save(new GamePlayer(game7, tony, LocalDateTime.from(game7.getCreationDate())));
+            GamePlayer gp13 = gamePlayerRepository.save(new GamePlayer(game8, kim, LocalDateTime.from(game8.getCreationDate())));
+            GamePlayer gp14 = gamePlayerRepository.save(new GamePlayer(game8, tony, LocalDateTime.from(game8.getCreationDate())));
 
 
             gp1.addShip(new Ship("Destroyer", Arrays.asList("H2", "H3", "H4")));
@@ -99,36 +101,36 @@ public class SalvoAppApplication {
             gp14.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
             gp14.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
 
-			gp1.addSalvo(new Salvo(1, Arrays.asList("B5", "C5", "F1")));
-			gp1.addSalvo(new Salvo(2, Arrays.asList("F2", "D5")));
+            gp1.addSalvo(new Salvo(1, Arrays.asList("B5", "C5", "F1")));
+            gp1.addSalvo(new Salvo(2, Arrays.asList("F2", "D5")));
 
-			gp2.addSalvo(new Salvo(1, Arrays.asList("B4", "B5", "B6")));
-			gp2.addSalvo(new Salvo(2, Arrays.asList("E1", "H3", "A2")));
+            gp2.addSalvo(new Salvo(1, Arrays.asList("B4", "B5", "B6")));
+            gp2.addSalvo(new Salvo(2, Arrays.asList("E1", "H3", "A2")));
 
-			gp3.addSalvo(new Salvo(1, Arrays.asList("A2", "A4", "G6")));
-			gp3.addSalvo(new Salvo(2, Arrays.asList("A3", "H6")));
+            gp3.addSalvo(new Salvo(1, Arrays.asList("A2", "A4", "G6")));
+            gp3.addSalvo(new Salvo(2, Arrays.asList("A3", "H6")));
 
-			gp4.addSalvo(new Salvo(1, Arrays.asList("B5", "D5", "C7")));
-			gp4.addSalvo(new Salvo(2, Arrays.asList("C5", "C6")));
+            gp4.addSalvo(new Salvo(1, Arrays.asList("B5", "D5", "C7")));
+            gp4.addSalvo(new Salvo(2, Arrays.asList("C5", "C6")));
 
-			gp5.addSalvo(new Salvo(1, Arrays.asList("G6", "H6", "A4")));
-			gp5.addSalvo(new Salvo(2, Arrays.asList("A2", "A3", "D8")));
+            gp5.addSalvo(new Salvo(1, Arrays.asList("G6", "H6", "A4")));
+            gp5.addSalvo(new Salvo(2, Arrays.asList("A2", "A3", "D8")));
 
-			gp6.addSalvo(new Salvo(1, Arrays.asList("H1", "H2", "H3")));
-			gp6.addSalvo(new Salvo(2, Arrays.asList("E1", "F2", "G3")));
+            gp6.addSalvo(new Salvo(1, Arrays.asList("H1", "H2", "H3")));
+            gp6.addSalvo(new Salvo(2, Arrays.asList("E1", "F2", "G3")));
 
-			gp7.addSalvo(new Salvo(1, Arrays.asList("A3", "A4", "F7")));
-			gp7.addSalvo(new Salvo(2, Arrays.asList("A2", "G6", "H6")));
+            gp7.addSalvo(new Salvo(1, Arrays.asList("A3", "A4", "F7")));
+            gp7.addSalvo(new Salvo(2, Arrays.asList("A2", "G6", "H6")));
 
-			gp8.addSalvo(new Salvo(1, Arrays.asList("B5", "C6", "H1")));
-			gp8.addSalvo(new Salvo(2, Arrays.asList("C5", "C7", "D5")));
+            gp8.addSalvo(new Salvo(1, Arrays.asList("B5", "C6", "H1")));
+            gp8.addSalvo(new Salvo(2, Arrays.asList("C5", "C7", "D5")));
 
-			gp9.addSalvo(new Salvo(1, Arrays.asList("A1", "A2", "A3")));
-			gp9.addSalvo(new Salvo(2, Arrays.asList("G6", "G7", "G8")));
+            gp9.addSalvo(new Salvo(1, Arrays.asList("A1", "A2", "A3")));
+            gp9.addSalvo(new Salvo(2, Arrays.asList("G6", "G7", "G8")));
 
-			gp10.addSalvo(new Salvo(1, Arrays.asList("B5", "B6", "C7")));
-			gp10.addSalvo(new Salvo(2, Arrays.asList("C6", "D6", "E6")));
-			gp10.addSalvo(new Salvo(3, Arrays.asList("H1", "H8")));
+            gp10.addSalvo(new Salvo(1, Arrays.asList("B5", "B6", "C7")));
+            gp10.addSalvo(new Salvo(2, Arrays.asList("C6", "D6", "E6")));
+            gp10.addSalvo(new Salvo(3, Arrays.asList("H1", "H8")));
 
 
             gamePlayerRepository.save(gp1);
@@ -145,7 +147,14 @@ public class SalvoAppApplication {
             gamePlayerRepository.save(gp13);
             gamePlayerRepository.save(gp14);
 
-
+scoreRepository.save(new Score(3,game1,jack,LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(0,game1,chloe,LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(1,game2,jack,LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(1,game2,chloe,LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(3,game3,chloe,LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(0,game3,tony,LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(1,game4,jack,LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
+scoreRepository.save(new Score(1,game4,tony,LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
         };
     }
 
