@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -118,6 +117,14 @@ public class Player {
                 .collect(Collectors.toSet());
     }
 
+    public int getTotalPoints() {
+        return this.getWonScores().size() * 3 + getTiesScores().size();
+    }
+
+
+//.mapToInt(Transaction::getValue)
+//.sum();
+
 
     //método para establecer la relación entre un objeto Player y un objeto GamePlayer
     public void addGamePlayer(GamePlayer gamePlayer) {
@@ -144,7 +151,7 @@ public class Player {
         dto.put("won", cantWon);
         dto.put("lose", cantLose);
         dto.put("tie", cantTie);
-        dto.put("total", cantWon * 3 + cantTie);
+        dto.put("total", this.getTotalPoints());
         return dto;
     }
 

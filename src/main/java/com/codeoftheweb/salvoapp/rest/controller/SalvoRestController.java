@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 @RestController
 @RequestMapping("/api")
 public class SalvoRestController {
@@ -33,7 +35,11 @@ public class SalvoRestController {
     @RequestMapping("/leaderboard")
     public List<Map<String, Object>> getPositions() {
         return playerRepository.findAll().stream()
+                .sorted(comparing(Player::getTotalPoints).reversed())
                 .map(Player::playerDTO)
+                //va por este lado, donde getTotalPoints es el atributo "total" del dto de cada player, pero no termino de redondear la idea
+               // .sorted((o1,o2)-> o1.compareTo(o2))
+
                 .collect(Collectors.toList());
     }
 
