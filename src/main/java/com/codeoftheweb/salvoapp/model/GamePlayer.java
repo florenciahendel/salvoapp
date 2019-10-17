@@ -4,10 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class GamePlayer {
@@ -61,9 +58,9 @@ public class GamePlayer {
     }
 
     //El atributo Id, a mi parecer, no debería tener un set ya que lo genera la DB, pero...
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDateTime getJoinDate() {
         return joinDate;
@@ -107,18 +104,18 @@ public class GamePlayer {
         return this.salvoes;
     }
 
+
     //DTO (data transfer object) para administrar la info de GamePlayer
-    public Map<String, Object> gamePlayerDTO(){
+    public Map<String, Object> gamePlayerDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("player", this.getPlayer().playerDTO());
 
-        Score score =this.getPlayer().getScoreByGame(this.getGame());
-        if(score != null)
+        Score score = this.getPlayer().getScoreByGame(this.getGame());
+        if (score != null)
             dto.put("score", score.getPoints());
         else
             dto.put("score", null);
-
 
         return dto;
     }
@@ -126,7 +123,6 @@ public class GamePlayer {
     //Solo sirve para filtrar y que no me muestre el ID de gamePlayer
     public Map<String, Object> gamePlayerUserNameDTO() {
         Map<String, Object> dto = new LinkedHashMap<>();
-
         dto.put("player", this.getPlayer().getUserName());
         return dto;
     }

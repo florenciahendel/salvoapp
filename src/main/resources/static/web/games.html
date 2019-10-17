@@ -19,6 +19,23 @@
                 </ul>
             </li>
         </ul>
+
+        <table class="leaderboard table">
+            <tr>
+                <th>Name</th>
+                <th>Won</th>
+                <th>Tie</th>
+                <th>Lose</th>
+                <th>Points</th>
+            </tr>
+            <tr v-for="h in leaderboard">
+                <td>{{ h.username }}</td>
+                <td>{{ h.won }}</td>
+                <td>{{ h.lose }}</td>
+                <td>{{ h.tie }}</td>
+                <td>{{ h.total }}</td>
+            </tr>
+        </table>
     </div>
 </section>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

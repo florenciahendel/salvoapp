@@ -3,15 +3,13 @@ package com.codeoftheweb.salvoapp.rest.controller;
 import com.codeoftheweb.salvoapp.model.*;
 import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
+import com.codeoftheweb.salvoapp.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,10 +22,19 @@ public class SalvoRestController {
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @RequestMapping("/games")
     public List<Map<String, Object>> getGames() {
         return gameRepository.findAll().stream().map(Game::gameDTO).collect(Collectors.toList());
+    }
+
+    @RequestMapping("/leaderboard")
+    public List<Map<String, Object>> getPositions() {
+        return playerRepository.findAll().stream()
+                .map(Player::playerDTO)
+                .collect(Collectors.toList());
     }
 
     private Set<Map> shipsList(Set<Ship> ships) {
@@ -41,12 +48,6 @@ public class SalvoRestController {
                 .map(salvo -> salvo.salvoDTO())
                 .collect(Collectors.toList());
     }
-
-    @RequestMapping("/leaderboard")
-    public Map<> getLeaderboardDTO{
-        return this.gamePlayerRepository.fin
-    }
-
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getGameView(@PathVariable long gamePlayerId) {
