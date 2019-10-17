@@ -42,11 +42,10 @@ public class SalvoRestController {
                 .collect(Collectors.toList());
     }
 
-//    private List <Map> scoresList (List<Player>playerScores){
-//        return playerScores.stream ()
-//                .map(playerScore -> playerScore.scorePlayerDTO()).collect(Collectors.toList());
-//
-//    }
+    @RequestMapping("/leaderboard")
+    public Map<> getLeaderboardDTO{
+        return this.gamePlayerRepository.fin
+    }
 
 
     @RequestMapping("/game_view/{gamePlayerId}")
@@ -71,15 +70,15 @@ public class SalvoRestController {
             dto.put("playersInThisGame", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
             //Cómo hago el mapeo al final, si solo quiero mostrar el userName del opponent? Tengo que crear otro DTO con esa info nada más, o puedo filtrar este?
             dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream()
-            .filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName())
-            .map(GamePlayer::gamePlayerUserNameDTO));
+                    .filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName())
+                    .map(GamePlayer::gamePlayerUserNameDTO));
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
             dto.put("salvoes", gamePlayer.getGame().getGamePlayers().stream()
-            .flatMap(gp -> gp.getSalvoes().stream()
-            .map(salvo -> salvo.salvoDTO())));
+                    .flatMap(gp -> gp.getSalvoes().stream()
+                            .map(salvo -> salvo.salvoDTO())));
             dto.put("enemySalvoes", salvoesList(gamePlayer.getGame().getGamePlayers().stream()
-            .filter(gp -> gp.getId() != gamePlayer.getId()).findFirst()
-            .orElseThrow(() -> new RuntimeException()).getSalvoes()));
+                    .filter(gp -> gp.getId() != gamePlayer.getId()).findFirst()
+                    .orElseThrow(() -> new RuntimeException()).getSalvoes()));
         } else {
             dto.put("error", "no such game");
         }

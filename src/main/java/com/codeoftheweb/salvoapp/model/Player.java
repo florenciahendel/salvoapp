@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,23 @@ public class Player {
                 .orElse(null);
     }
 
+    public Set<Score> getLossesScores() {
+        return this.scores.stream()
+                .filter(lossScore -> lossScore.getPoints() == 0)
+                .collect(Collectors.toSet());
+    }
 
+    public Set<Score> getTiesScores() {
+        return this.scores.stream()
+                .filter(tieScore -> tieScore.getPoints() == 1)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Score> getWonScores() {
+        return this.scores.stream()
+                .filter(wonScore -> wonScore.getPoints() == 3)
+                .collect(Collectors.toSet());
+    }
 
 
     //método para establecer la relación entre un objeto Player y un objeto GamePlayer
@@ -118,10 +135,17 @@ public class Player {
 
     //DTO (data transfer object) para administrar la info de Player
     public Map<String, Object> playerDTO() {
+        Integer cantWon = this.getWonScores().size();
+        Integer cantLose = this.getLossesScores().size();
+        Integer cantTie = this.getTiesScores().size();
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("username", this.getUserName());
-                return dto;
+        dto.put("won", cantWon);
+        dto.put("lose", cantLose);
+        dto.put("tie", cantTie);
+        dto.put("total", cantWon * 3 + cantTie);
+        return dto;
     }
 
 }
