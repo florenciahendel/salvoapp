@@ -3,44 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Salvo Games</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-<header class="bg-success text-light text-center py-5">
+<header class="bg-success text-light text-center py-2">
     <h1>Salvo Games</h1>
 </header>
 <section>
     <div id="app" class="p-4">
-        <ul class="games-list">
-            <li v-for="game in games" class="pt-2">Game no. {{game.id}} created on {{game.created}}
-                <p>Players:</p>
-                <ul>
-                    <li v-for="i in game.gamePlayers">{{i.player.username}}</li>
-                </ul>
-            </li>
-        </ul>
-
-        <table class="leaderboard table">
-            <tr>
-                <th>Name</th>
-                <th>Won</th>
-                <th>Tie</th>
-                <th>Lose</th>
-                <th>Points</th>
-            </tr>
-            <tr v-for="h in leaderboard">
-                <td>{{ h.username }}</td>
-                <td>{{ h.won }}</td>
-                <td>{{ h.lose }}</td>
-                <td>{{ h.tie }}</td>
-                <td>{{ h.total }}</td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-12 pb-5">
+                <h2>LeaderBoard</h2>
+            </div>
+            <div class="col-12 pb-5">
+                <table class="leaderboard table table-sm table-bordered table-striped text-center">
+                    <tr class="table-dark">
+                        <th>Name</th>
+                        <th>Won</th>
+                        <th>Tie</th>
+                        <th>Lose</th>
+                        <th>Points</th>
+                    </tr>
+                    <tr v-for="h in leaderboard">
+                        <td>{{ h.username }}</td>
+                        <td>{{ h.won }}</td>
+                        <td>{{ h.lose }}</td>
+                        <td>{{ h.tie }}</td>
+                        <td>{{ h.total }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-12 pb-5">
+                    <h2>Game List</h2>
+                </div>
+                <div class="col-12 pb-5">
+                    <ul class="games-list">
+                        <li v-for="game in games" class="py-1">Date: {{game.created}}
+                            <p>Players:</p>
+                            <ul>
+                                <li v-for="i in game.gamePlayers">{{i.player.username}}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="games.js"></script>
 </body>
