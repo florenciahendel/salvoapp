@@ -37,9 +37,6 @@ public class SalvoRestController {
         return playerRepository.findAll().stream()
                 .sorted(comparing(Player::getTotalPoints).reversed())
                 .map(Player::playerDTO)
-                //va por este lado, donde getTotalPoints es el atributo "total" del dto de cada player, pero no termino de redondear la idea
-               // .sorted((o1,o2)-> o1.compareTo(o2))
-
                 .collect(Collectors.toList());
     }
 

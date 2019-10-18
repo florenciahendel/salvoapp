@@ -25,6 +25,9 @@ public class Player {
 
     private String userName;
 
+    private String password;
+
+
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
 
@@ -82,6 +85,13 @@ public class Player {
         return this.gamePlayers;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Set<Score> getScores() {
         return this.scores;
