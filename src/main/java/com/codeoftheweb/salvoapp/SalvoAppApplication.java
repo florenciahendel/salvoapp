@@ -5,10 +5,22 @@ import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
 import com.codeoftheweb.salvoapp.repository.PlayerRepository;
 import com.codeoftheweb.salvoapp.repository.ScoreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -21,6 +33,11 @@ public class SalvoAppApplication {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
     public CommandLineRunner initData(PlayerRepository playerRepository
             , GameRepository gameRepository
             , GamePlayerRepository gamePlayerRepository
@@ -28,10 +45,10 @@ public class SalvoAppApplication {
     ) {
         return (args) -> {
 
-            Player jack = playerRepository.save(new Player("j.bauer@ctu.gov", "Jack", "Bauer"));
-            Player chloe = playerRepository.save(new Player("c.obrian@ctu.gov", "Chloe", "O'Brian"));
-            Player kim = playerRepository.save(new Player("kim_bauer@gmail.com", "Kim", "Bauer"));
-            Player tony = playerRepository.save(new Player("t.almeida@ctu.gov", "Tony", "Almeida"));
+            Player jack = playerRepository.save(new Player("j.bauer@ctu.gov", "Jack", "Bauer", "24"));
+            Player chloe = playerRepository.save(new Player("c.obrian@ctu.gov", "Chloe", "O'Brian", "42"));
+            Player kim = playerRepository.save(new Player("kim_bauer@gmail.com", "Kim", "Bauer", "kb"));
+            Player tony = playerRepository.save(new Player("t.almeida@ctu.gov", "Tony", "Almeida", "mole"));
 
 
             Game game1 = gameRepository.save(new Game(LocalDateTime.now()));
@@ -147,15 +164,62 @@ public class SalvoAppApplication {
             gamePlayerRepository.save(gp13);
             gamePlayerRepository.save(gp14);
 
-scoreRepository.save(new Score(3,game1,jack,LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(0,game1,chloe,LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(1,game2,jack,LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(1,game2,chloe,LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(3,game3,chloe,LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(0,game3,tony,LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(1,game4,jack,LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
-scoreRepository.save(new Score(1,game4,tony,LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(3, game1, jack, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(0, game1, chloe, LocalDateTime.from(game1.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(1, game2, jack, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(1, game2, chloe, LocalDateTime.from(game2.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(3, game3, chloe, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(0, game3, tony, LocalDateTime.from(game3.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(1, game4, jack, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
+            scoreRepository.save(new Score(1, game4, tony, LocalDateTime.from(game4.getCreationDate().plusMinutes(30))));
         };
     }
 
 }
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+    @Autowired
+    PlayerRepository playerRepository;
+
+    @Override
+    public void init(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(inputName -> {
+            Player player = playerRepository.findByUserName(inputName);
+            if (player != null && player.getUserName() == "j.bauer@ctu.gov") {
+                return new User(player.getUserName(), player.getPassword(),
+                        AuthorityUtils.createAuthorityList("ADMIN"));
+            } else if (player != null) {
+                return new User(player.getUserName(), player.getPassword(),
+                        AuthorityUtils.createAuthorityList("USER"));
+            } else {
+                throw new UsernameNotFoundException("Unknown user: " + inputName);
+            }
+        });
+    }
+}
+
+//@Configuration
+//@EnableWebSecurity
+//class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .antMatchers("/api/login").hasAnyAuthority()
+//                .antMatchers("/admin/**").hasAuthority("ADMIN")
+//                .antMatchers("/**").hasAuthority("USER")
+//
+//
+//                .and();
+//        http.formLogin()
+//                .usernameParameter("userName")
+//                .passwordParameter("password")
+//                .loginPage("/api/login");
+//
+//        http.logout().logoutUrl("/api/logout");
+//
+//    }
+//}
+
+

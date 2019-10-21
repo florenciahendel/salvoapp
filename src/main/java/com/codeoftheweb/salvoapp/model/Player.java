@@ -41,10 +41,11 @@ public class Player {
     public Player() {
     }
 
-    public Player(String userName, String firstName, String lastName) {
+    public Player(String userName, String firstName, String lastName, String password) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password =password;
     }
 
     //GETTERS Y SETTERS

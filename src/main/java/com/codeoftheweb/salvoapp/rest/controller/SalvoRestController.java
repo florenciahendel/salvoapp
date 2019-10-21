@@ -5,9 +5,10 @@ import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
 import com.codeoftheweb.salvoapp.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,6 +88,26 @@ public class SalvoRestController {
             dto.put("error", "no such game");
         }
         return dto;
+    }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(
+            @RequestParam String userName, @RequestParam String firstName,
+                        @RequestParam String lastName, @RequestParam String password) {
+
+        if (userName.isEmpty() || password.isEmpty()) {
+            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+        }
+
+        if (playerRepository.findOneByUserName(userName) !=  null) {
+            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }
+
+        playerRepository.save(new Player(userName, firstName, lastName, passwordEncoder.encode(password)));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
 
