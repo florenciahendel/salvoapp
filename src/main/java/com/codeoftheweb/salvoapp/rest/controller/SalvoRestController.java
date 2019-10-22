@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,15 +95,16 @@ public class SalvoRestController {
         return dto;
     }
 
-    ResponseEntity<Map<String, Object>> createUser(@RequestParam String username, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String password) {
+    @RequestMapping(path = "/players", method = RequestMethod.POST)
+    ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String password) {
         ResponseEntity<Map<String, Object>> response;
-        Player player = playerRepository.findPlayerByUserName(username);
-        if (username.isEmpty() || password.isEmpty()) {
+        Player player = playerRepository.findPlayerByUserName(userName);
+        if (userName.isEmpty() || password.isEmpty()) {
             response = new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
         } else if (player != null) {
             response = new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.FORBIDDEN);
         } else {
-            Player newPlayer = playerRepository.save(new Player(username, firstName, lastName, passwordEncoder.encode(password)));
+            Player newPlayer = playerRepository.save(new Player(userName, firstName, lastName, passwordEncoder.encode(password)));
             response = new ResponseEntity<>(makeMap("id", newPlayer.getId()), HttpStatus.CREATED);
         }
         return response;
