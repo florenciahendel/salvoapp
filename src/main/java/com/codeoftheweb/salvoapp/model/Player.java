@@ -27,6 +27,7 @@ public class Player {
 
     private String password;
 
+    private boolean admin;
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePlayer> gamePlayers = new HashSet<>();
@@ -38,14 +39,22 @@ public class Player {
     -----*/
 
     //CONSTRUCTORES
-    public Player() {
-    }
+    public Player() { }
 
     public Player(String userName, String firstName, String lastName, String password) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password =password;
+        this.password = password;
+        this.admin = false;
+    }
+
+    public Player(String userName, String firstName, String lastName,String password, boolean isAdmin) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.admin = isAdmin;
     }
 
     //GETTERS Y SETTERS
@@ -54,9 +63,9 @@ public class Player {
     }
 
 //El atributo Id, a mi parecer, no debería tener un set ya que lo genera la DB, pero...
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -82,16 +91,24 @@ public class Player {
         this.userName = userName;
     }
 
-    public Set<GamePlayer> getGamePlayers() {
-        return this.gamePlayers;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isAdmin() {
+        return this.admin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.admin = isAdmin;
+    }
+
+    public Set<GamePlayer> getGamePlayers() {
+        return this.gamePlayers;
     }
 
     public Set<Score> getScores() {

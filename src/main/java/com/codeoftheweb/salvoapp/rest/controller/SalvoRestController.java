@@ -7,8 +7,13 @@ import com.codeoftheweb.salvoapp.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +32,9 @@ public class SalvoRestController {
 
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @RequestMapping("/games")
     public List<Map<String, Object>> getGames() {
@@ -90,24 +98,28 @@ public class SalvoRestController {
         return dto;
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(
-            @RequestParam String userName, @RequestParam String firstName,
-                        @RequestParam String lastName, @RequestParam String password) {
-
-        if (userName.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+    ResponseEntity<Map<String, Object>> createUser(@RequestParam String username, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String password) {
+        ResponseEntity<Map<String, Object>> response;
+        Player player = playerRepository.findPlayerByUserName(username);
+        if (username.isEmpty() || password.isEmpty()) {
+            response = new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        } else if (player != null) {
+            response = new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.FORBIDDEN);
+        } else {
+            Player newPlayer = playerRepository.save(new Player(username, firstName, lastName, passwordEncoder.encode(password)));
+            response = new ResponseEntity<>(makeMap("id", newPlayer.getId()), HttpStatus.CREATED);
         }
+        return response;
+    }
 
-        if (playerRepository.findOneByUserName(userName) !=  null) {
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
-        }
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
+    }
 
-        playerRepository.save(new Player(userName, firstName, lastName, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 }
 

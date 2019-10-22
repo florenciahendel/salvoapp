@@ -10,16 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -32,10 +22,8 @@ public class SalvoAppApplication {
         SpringApplication.run(SalvoAppApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initData(PlayerRepository playerRepository
@@ -45,10 +33,10 @@ public class SalvoAppApplication {
     ) {
         return (args) -> {
 
-            Player jack = playerRepository.save(new Player("j.bauer@ctu.gov", "Jack", "Bauer", "24"));
-            Player chloe = playerRepository.save(new Player("c.obrian@ctu.gov", "Chloe", "O'Brian", "42"));
-            Player kim = playerRepository.save(new Player("kim_bauer@gmail.com", "Kim", "Bauer", "kb"));
-            Player tony = playerRepository.save(new Player("t.almeida@ctu.gov", "Tony", "Almeida", "mole"));
+            Player jack = playerRepository.save(new Player("j.bauer@ctu.gov", "Jack", "Bauer", passwordEncoder.encode("24"),true));
+            Player chloe = playerRepository.save(new Player("c.obrian@ctu.gov", "Chloe", "O'Brian", passwordEncoder.encode("42")));
+            Player kim = playerRepository.save(new Player("kim_bauer@gmail.com", "Kim", "Bauer", passwordEncoder.encode("kb")));
+            Player tony = playerRepository.save(new Player("t.almeida@ctu.gov", "Tony", "Almeida", passwordEncoder.encode("mole")));
 
 
             Game game1 = gameRepository.save(new Game(LocalDateTime.now()));
@@ -176,50 +164,4 @@ public class SalvoAppApplication {
     }
 
 }
-
-@Configuration
-class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
-
-    @Autowired
-    PlayerRepository playerRepository;
-
-    @Override
-    public void init(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inputName -> {
-            Player player = playerRepository.findByUserName(inputName);
-            if (player != null && player.getUserName() == "j.bauer@ctu.gov") {
-                return new User(player.getUserName(), player.getPassword(),
-                        AuthorityUtils.createAuthorityList("ADMIN"));
-            } else if (player != null) {
-                return new User(player.getUserName(), player.getPassword(),
-                        AuthorityUtils.createAuthorityList("USER"));
-            } else {
-                throw new UsernameNotFoundException("Unknown user: " + inputName);
-            }
-        });
-    }
-}
-
-//@Configuration
-//@EnableWebSecurity
-//class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests()
-//                .antMatchers("/api/login").hasAnyAuthority()
-//                .antMatchers("/admin/**").hasAuthority("ADMIN")
-//                .antMatchers("/**").hasAuthority("USER")
-//
-//
-//                .and();
-//        http.formLogin()
-//                .usernameParameter("userName")
-//                .passwordParameter("password")
-//                .loginPage("/api/login");
-//
-//        http.logout().logoutUrl("/api/logout");
-//
-//    }
-//}
-
 
