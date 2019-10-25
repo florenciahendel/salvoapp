@@ -12,6 +12,16 @@
 </header>
 <section>
     <div id="app" class="p-4">
+        <template v-if="player == 'guest'">
+            <h1>Please Login</h1>
+        </template>
+        <template v-else>
+            <h1>Welcome {{player.username}}</h1>
+            <button @click="logout()">Log out</button>
+            <button @click="createGame()">New Game</button>
+        </template>
+
+        <!--Leaderboard-->
         <div class="row">
             <div class="col-12 pb-5">
                 <h2>LeaderBoard</h2>
@@ -34,24 +44,45 @@
                     </tr>
                 </table>
             </div>
+            <!--Lista de juegos-->
             <div class="row">
                 <div class="col-12 pb-5">
                     <h2>Game List</h2>
                 </div>
                 <div class="col-12 pb-5">
                     <ul class="games-list">
-                        <li v-for="game in games" class="py-1">Date: {{game.created}}
+                        <li v-for="game in games" class="pt-2">Game no. {{game.id}} created on
+                            {{game.created}}
                             <p>Players:</p>
                             <ul>
-                                <li v-for="i in game.gamePlayers">{{i.player.username}}</li>
+                                <li v-for="gamePlayer in game.gamePlayers">
+                                    {{gamePlayer.player.username}}
+                                    <template v-if="player != 'guest'">
+                                        <template v-if="gamePlayer.player.id == player.id">
+                                            <a :href="'/web/game.html?gp='+gamePlayer.id">Enter</a>
+                                        </template>
+                                        <template v-else-if="game.gamePlayers.length == 1">
+                                            <button @click="joinGame(game.id)">Join</button>
+                                        </template>
+                                    </template>
+
+                                </li>
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
+
+
         </div>
     </div>
 </section>
+
+<form id="login" action="/api/login" method="POST">
+    <input type="text" name="username">
+    <input type="text" name="password">
+    <button type="submit">log in</button>
+</form>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
