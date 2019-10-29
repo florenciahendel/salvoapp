@@ -6,7 +6,7 @@ console.log(json);
     app.games = json
     app.player = json.player
 })
-getGames()
+//getGames()
 
 fetch("/api/leaderboard")
 .then(res => res.json())
