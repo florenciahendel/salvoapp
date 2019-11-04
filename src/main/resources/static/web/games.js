@@ -2,8 +2,9 @@ function getGames(){
 fetch("/api/games")
 .then(res => res.json())
 .then(json => {
+data = json
 console.log(json);
-    app.games = json
+    app.games = json.games
     app.player = json.player
 })
 
