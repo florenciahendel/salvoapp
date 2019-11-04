@@ -1,4 +1,4 @@
-
+function getGames(){
 fetch("/api/games")
 .then(res => res.json())
 .then(json => {
@@ -6,7 +6,7 @@ console.log(json);
     app.games = json
     app.player = json.player
 })
-//getGames()
+
 
 fetch("/api/leaderboard")
 .then(res => res.json())
@@ -14,6 +14,10 @@ fetch("/api/leaderboard")
 console.log(json);
     app.leaderboard = json
 })
+}
+getGames()
+
+
 
 var app = new Vue({
     el: "#app",
@@ -23,6 +27,25 @@ var app = new Vue({
         player: {}
     },
     methods: {
+        login(evt) {
+        		   evt.preventDefault();
+
+        		   let formData = new FormData(evt.target)
+
+
+        		   fetch('/api/login',{
+        				method: 'POST',
+        				body: formData,
+
+        			})
+        			.then((res)=> res)
+        			.then(json =>{
+        				console.log(json)
+        				getGames()
+        			})
+        			.catch((error)=> console.log(error))
+
+        		},
         logout(){
     			fetch('/api/logout').then(() => getGames())
     		},

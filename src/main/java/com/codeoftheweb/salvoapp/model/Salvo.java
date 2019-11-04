@@ -13,7 +13,8 @@ import java.util.Map;
 @Entity
 public class Salvo {
 
-     /*-------
+    /*-------
+
     ATRIBUTOS
     -------*/
 
@@ -21,7 +22,6 @@ public class Salvo {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-
     private Integer turn;
 
     //Esta anotation de LazyCollection es para que funcionen las listas y no tire error de MultipleBagFetchException: cannot simultaneously fetch multiple bags,

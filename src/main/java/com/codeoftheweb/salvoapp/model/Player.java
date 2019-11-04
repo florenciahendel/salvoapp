@@ -34,6 +34,8 @@ public class Player {
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Score> scores = new HashSet<>();
+
+
     /*-----
     METODOS
     -----*/
@@ -148,10 +150,6 @@ public class Player {
     public int getTotalPoints() {
         return this.getWonScores().size() * 3 + getTiesScores().size();
     }
-
-
-//.mapToInt(Transaction::getValue)
-//.sum();
 
 
     //método para establecer la relación entre un objeto Player y un objeto GamePlayer

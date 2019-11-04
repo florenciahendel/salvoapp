@@ -7,16 +7,21 @@
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-<header class="bg-success text-light text-center py-2">
+<header class="bg-info text-light text-center py-2">
     <h1>Salvo Games</h1>
 </header>
 <section>
     <div id="app" class="p-4">
         <template v-if="player == 'guest'">
-            <h1>Please Login</h1>
+            <h1 >Please Login</h1>
+            <form v-on:submit.prevent="login($event)" id="login" >
+                <input type="text" name="username">
+                <input type="text" name="password">
+                <button type="submit">log in</button>
+            </form>
         </template>
         <template v-else>
-            <h1>Welcome {{player.username}}</h1>
+            <h1 >Welcome {{player.username}}</h1>
             <button @click="logout()">Log out</button>
             <button @click="createGame()">New Game</button>
         </template>
@@ -78,11 +83,11 @@
     </div>
 </section>
 
-<form id="login" action="/api/login" method="POST">
+<!--<form id="login" action="/api/login" method="POST">
     <input type="text" name="username">
     <input type="text" name="password">
     <button type="submit">log in</button>
-</form>
+</form>-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
         integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
