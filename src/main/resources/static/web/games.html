@@ -13,11 +13,33 @@
 <section>
     <div id="app" class="p-4">
         <template v-if="player == 'guest'">
-            <h1 >Please Login</h1>
-            <form v-on:submit.prevent="login($event)" id="login" >
-                <input type="text" name="username">
-                <input type="text" name="password">
-                <button type="submit">log in</button>
+            <h1>Please Login</h1>
+            <form v-on:submit.prevent="login($event)" id="login">
+                <label for="username">Username</label>
+                <input type="text" name="username" placeholder="j.doe@mail.com">
+                <br>
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="******">
+                <br>
+                <button type="submit">Log In</button>
+            </form>
+            <br>
+            <h2>Don't have an accout? Create one!</h2>
+            <form v-on:submit.prevent="signup($event)" id="signup">
+                <label for="username">Username</label>
+                <input type="text" name="username" placeholder="j.doe@mail.com">
+                <br>
+                <label for="firstName"> First Name</label>
+                <input type="text" name="firstName" placeholder="John">
+                <br>
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" placeholder="Doe">
+                <br>
+                <label for="password">Password</label>
+                <input type="password" name="password" placeholder="******">
+                <br>
+                <button type="submit">New Account</button>
+                <br>
             </form>
         </template>
         <template v-else>
