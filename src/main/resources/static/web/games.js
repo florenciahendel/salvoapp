@@ -68,6 +68,25 @@ var app = new Vue({
     			.catch(error => error)
     			.then(error => console.log(error))
     		},
+    		signup(evt) {
+                    		   evt.preventDefault();
+
+                    		   let formData = new FormData(evt.target)
+
+
+                    		   fetch('/api/players',{
+                    				method: 'POST',
+                    				body: formData,
+
+                    			})
+                    			.then((res)=> res)
+                    			.then(json =>{
+                    				console.log(json)
+                    				getGames()
+                    			})
+                    			.catch((error)=> console.log(error))
+
+                    		},
     		joinGame(gameId){
     			fetch('/api/games/' + gameId + '/players', {
     				method: 'POST'
@@ -91,7 +110,7 @@ var app = new Vue({
 
 
     document.querySelector('#login').onsubmit = login
-
+    document.querySelector('#signup').onsubmit = signup
 
     function login(evt) {
        evt.preventDefault();
@@ -113,4 +132,22 @@ var app = new Vue({
 
     }
 
+function signup(evt){
+       evt.preventDefault();
 
+       let formData = new FormData(evt.target)
+
+
+       fetch('/api/players',{
+    		method: 'POST',
+    		body: formData,
+
+    	})
+    	.then((res)=> res)
+    	.then(json =>{
+    		console.log(json)
+    		getGames()
+    	})
+    	.catch((error)=> console.log(error))
+
+}
