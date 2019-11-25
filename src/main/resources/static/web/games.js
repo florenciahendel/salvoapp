@@ -41,7 +41,6 @@ var app = new Vue({
         			})
         			.then((res)=> res)
         			.then(json =>{
-        				console.log(json)
         				getGames()
         			})
         			.catch((error)=> console.log(error))
@@ -50,7 +49,7 @@ var app = new Vue({
         logout(){
     			fetch('/api/logout').then(() => getGames())
     		},
-    		createGame(){
+        createGame(){
     			fetch('/api/games',{
     				method: 'POST'
     			})
@@ -68,33 +67,35 @@ var app = new Vue({
     			.catch(error => error)
     			.then(error => console.log(error))
     		},
-    		signup(evt) {
-                    		   evt.preventDefault();
+    	signup(evt) {
+                   		   evt.preventDefault();
 
-                    		   let formData = new FormData(evt.target)
+                   		   let formData = new FormData(evt.target)
 
 
-                    		   fetch('/api/players',{
-                    				method: 'POST',
-                    				body: formData,
+                   		   fetch('/api/players',{
+                   				method: 'POST',
+                   				body: formData,
 
                     			})
-                    			.then((res)=> res)
-                    			.then(json =>{
-                    				console.log(json)
-                    				getGames()
+                    	    .then((res)=> res)
+                    		.then(json =>{
+                    	//		getGames()
+
+                   				//$("#signup").hide()
+                app.login(evt)
                     			})
-                    			.catch((error)=> console.log(error))
+                   			.catch((error)=> console.log(error))
 
                     		},
-    		joinGame(gameId){
-    			fetch('/api/games/' + gameId + '/players', {
-    				method: 'POST'
+    	joinGame(gameId){
+    		fetch('/api/games/' + gameId + '/players', {
+   				method: 'POST'
     			})
-    			.then(res => {
-    				if(res.ok){
-    					return res.json()
-    				}else{
+   			.then(res => {
+   				if(res.ok){
+   					return res.json()
+   				}else{
     					return Promise.reject(res.json())
     				}
     			})
@@ -109,7 +110,7 @@ var app = new Vue({
     });
 
 
-    document.querySelector('#login').onsubmit = login
+/*    document.querySelector('#login').onsubmit = login
     document.querySelector('#signup').onsubmit = signup
 
     function login(evt) {
@@ -150,4 +151,4 @@ function signup(evt){
     	})
     	.catch((error)=> console.log(error))
 
-}
+}*/

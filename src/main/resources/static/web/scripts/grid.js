@@ -11,7 +11,7 @@ const createGrid = function(size, element, id){
         let row = document.createElement('DIV')
         row.classList.add('grid-row')
         row.id =`${id}-grid-row${i}`
-        wrapper.appendChild(row)// appends the row created in each itaration to the container
+        wrapper.appendChild(row)// appends the row created in each iteration to the container
 
         //the second loop creates the amount of cells needed given the size of the grid for every row
         for(let j = 0; j < size; j++){
@@ -57,7 +57,7 @@ const createGrid = function(size, element, id){
         document.querySelector("#display p").innerText = 'movement not allowed'
         return
       }
-      //variables where the data of the ship beeing dragged is stored
+      //variables where the data of the ship being dragged is stored
       let data = ev.dataTransfer.getData("ship");
       let ship = document.getElementById(data);
       //variables where the data of the targeted cell is stored

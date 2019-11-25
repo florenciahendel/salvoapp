@@ -68,43 +68,43 @@ public class SalvoAppApplication {
 
             gp1.addShip(new Ship("Destroyer", Arrays.asList("H2", "H3", "H4")));
             gp1.addShip(new Ship("Submarine", Arrays.asList("E1", "F1", "G1")));
-            gp1.addShip(new Ship("Patrol Boat", Arrays.asList("B4", "B5")));
+            gp1.addShip(new Ship("Patrol_Boat", Arrays.asList("B4", "B5")));
 
             gp2.addShip(new Ship("Destoyer", Arrays.asList("B5", "C5", "D5")));
-            gp2.addShip(new Ship("Patrol Boat", Arrays.asList("F1", "F2")));
+            gp2.addShip(new Ship("Patrol_Boat", Arrays.asList("F1", "F2")));
 
             gp3.addShip(new Ship("Destroyer", Arrays.asList("B5", "C5", "D5")));
-            gp3.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp3.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp4.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
-            gp4.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
+            gp4.addShip(new Ship("Patrol_Boat", Arrays.asList("G6", "H6")));
 
             gp5.addShip(new Ship("Destroyer", Arrays.asList("B5", "C5", "D5")));
-            gp5.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp5.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp6.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
-            gp6.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
+            gp6.addShip(new Ship("Patrol_Boat", Arrays.asList("G6", "H6")));
 
             gp7.addShip(new Ship("Submarine", Arrays.asList("B5", "C5", "D5")));
-            gp7.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp7.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp8.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
-            gp8.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
+            gp8.addShip(new Ship("Patrol_Boat", Arrays.asList("G6", "H6")));
 
             gp9.addShip(new Ship("Destroyer", Arrays.asList("B5", "C5", "D5")));
-            gp9.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp9.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp10.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
-            gp10.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
+            gp10.addShip(new Ship("Patrol_Boat", Arrays.asList("G6", "H6")));
 
             gp11.addShip(new Ship("Destroyer", Arrays.asList("B5", "C5", "D5")));
-            gp11.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp11.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp13.addShip(new Ship("Destroyer", Arrays.asList("B5", "C5", "D5")));
-            gp13.addShip(new Ship("Patrol Boat", Arrays.asList("C6", "C7")));
+            gp13.addShip(new Ship("Patrol_Boat", Arrays.asList("C6", "C7")));
 
             gp14.addShip(new Ship("Submarine", Arrays.asList("A2", "A3", "A4")));
-            gp14.addShip(new Ship("Patrol Boat", Arrays.asList("G6", "H6")));
+            gp14.addShip(new Ship("Patrol_Boat", Arrays.asList("G6", "H6")));
 
             gp1.addSalvo(new Salvo(1, Arrays.asList("B5", "C5", "F1")));
             gp1.addSalvo(new Salvo(2, Arrays.asList("F2", "D5")));

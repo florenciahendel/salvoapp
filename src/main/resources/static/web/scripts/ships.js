@@ -1,5 +1,5 @@
 /*creates the ships with the ability of been placed in the grid. 
-It requires a shipType, that is, the id by wich the ship will be recongnized;
+It requires a shipType, that is, the id by which the ship will be recongnized;
 the amount of cells the ship is going to occupy in the grid;
 a parent where the ship will be appended to;
 and a boolean that specifies whether the ship can be moved or not.

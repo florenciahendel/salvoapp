@@ -1,6 +1,6 @@
 let data
 let player
-let opponet
+let opponent
 let params = new URLSearchParams(location.search)
 let gp = params.get('gp')
 
