@@ -234,6 +234,34 @@ public class SalvoRestController {
 
         return response;
     }
+
+    @RequestMapping(path="/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> addSalvo(Authentication authentication, @PathVariable long gamePlayerId, @RequestBody List<String> shots){
+        ResponseEntity<Map<String,Object>> response;
+        if (isGuest(authentication)){
+            response = new ResponseEntity<>(makeMap("error", "You must be logged in"), HttpStatus.UNAUTHORIZED);
+        } else {
+            GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
+            Player player = playerRepository.findPlayerByUserName(authentication.getName());
+            if (gamePlayer==null){
+                response = new ResponseEntity<>(makeMap("error", "no such game"), HttpStatus.NOT_FOUND);
+            }else if (gamePlayer.getPlayer().getId()!=player.getId()) {
+                response = new ResponseEntity<>(makeMap("error", "This is not your game"), HttpStatus.UNAUTHORIZED);
+            } else if (shots.size()!=5){
+                response = new ResponseEntity<>(makeMap("error", "wrong number of shots"), HttpStatus.FORBIDDEN);
+            }else{
+                int turn = gamePlayer.getSalvoes().size()+1;
+                Salvo salvo = new Salvo(turn, shots);
+                gamePlayer.addSalvo(salvo);
+                gamePlayerRepository.save(gamePlayer);
+                response = new ResponseEntity<>(makeMap("Success", "Salvo added"), HttpStatus.CREATED);
+            }
+        }
+
+    return response;
+    }
+
+
     private boolean isOutOfRange(Ship ship){
 
         for(String cell : ship.getLocations()){
@@ -317,6 +345,7 @@ public class SalvoRestController {
         return false;
     }
 }
+
 
 
 
