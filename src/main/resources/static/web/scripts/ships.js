@@ -66,13 +66,13 @@ const createShips = function(shipType, length, orientation, parent, isStatic){
     
 
 
-    //event to allow the ship beeing dragged
+    //event to allow the ship being dragged
     function dragShip(ev){
         ev.dataTransfer.setData("ship", ev.target.parentNode.id)
 
     }
 
-    //event to allow the ship beeing dragged on touch devices
+    //event to allow the ship being dragged on touch devices
     function touchShip(ev){
         // make the element draggable by giving it an absolute position and modifying the x and y coordinates
         ship.classList.add("absolute");

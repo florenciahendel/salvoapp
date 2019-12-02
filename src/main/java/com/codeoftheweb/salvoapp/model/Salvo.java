@@ -5,10 +5,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Salvo {
@@ -27,11 +25,10 @@ public class Salvo {
     //Esta anotation de LazyCollection es para que funcionen las listas y no tire error de MultipleBagFetchException: cannot simultaneously fetch multiple bags,
     // además se sacan los fetch type de todos los @*ToMany que se relacionen
     @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> locations = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "gamePlayer_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="gamePlayer_id")
     private GamePlayer gamePlayer;
 
      /*-----
@@ -76,15 +73,62 @@ public class Salvo {
         this.gamePlayer = gamePlayer;
     }
 
-    //DTO (data transfer object) para administrar la info de Salvo
-    public Map<String, Object> salvoDTO() {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("player", this.getGamePlayer().getPlayer().getId());
-        dto.put("turn", this.getTurn());
+    public List<String> getHits(List<String> myShots, Set<Ship> opponentShips) {
 
+        List<String> allEnemyLocs = new ArrayList<>();
+
+        opponentShips.forEach(ship -> allEnemyLocs.addAll(ship.getLocations()));
+
+        return myShots
+                .stream()
+                .filter(shot -> allEnemyLocs
+                        .stream()
+                        .anyMatch(loc -> loc.equals(shot)))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<Ship> getSunkenShips(Set<Salvo> mySalvoes, Set<Ship> opponentShips) {
+
+        List<String> allShots = new ArrayList<>();
+
+        mySalvoes.forEach(salvo -> allShots.addAll(salvo.getLocations()));
+
+        return opponentShips
+               .stream()
+               .filter(ship -> allShots.containsAll(ship.getLocations()))
+               .collect(Collectors.toList());
+    }
+
+
+    //DTO (data transfer object) para administrar la info de Salvo
+    public Map<String, Object> salvoDTO(){
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("turn", this.getTurn());
+        dto.put("player", this.getGamePlayer().getPlayer().getId());
         dto.put("locations", this.getLocations());
+
+        GamePlayer opponent = this.getGamePlayer().getOpponent();
+
+        if(opponent != null){
+
+            Set<Ship> enemyShips = opponent.getShips();
+
+            dto.put("hits", this.getHits(this.getLocations(),enemyShips));
+
+            Set<Salvo> mySalvoes = this.getGamePlayer()
+                    .getSalvoes()
+                    .stream()
+                    .filter(salvo -> salvo.getTurn() <= this.getTurn())
+                    .collect(Collectors.toSet());
+
+            dto.put("sunken", this.getSunkenShips(mySalvoes, enemyShips).stream().map(Ship::shipDTO));
+        }
+
         return dto;
     }
+
+
 }
 
 

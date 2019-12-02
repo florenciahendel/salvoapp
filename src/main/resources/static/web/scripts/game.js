@@ -4,9 +4,9 @@ let opponent
 let params = new URLSearchParams(location.search)
 let gp = params.get('gp')
 
-getGameData(gp)
+getGameData(gp,true)
 
-function getGameData(gpId){
+function getGameData(gpId, viewShips){
 
 	document.getElementById("dock").innerHTML = `<div id="display">
 									                <p>Welcome...</p>
@@ -17,9 +17,9 @@ function getGameData(gpId){
 									            `
 	document.getElementById("grid-ships").innerHTML = ""
 	document.getElementById("grid-salvoes").innerHTML = ""
-	
+
 	createGrid(11, document.getElementById('grid-ships'), 'ships')
-	
+
 
 	fetch(`/api/game_view/${gpId}`)
 	.then(res => {
@@ -36,8 +36,14 @@ function getGameData(gpId){
 		 if(data.ships.length > 0){
 		 	getShips(data.ships)
 		 	createGrid(11, document.getElementById('grid-salvoes'), 'salvoes')
-		 	document.getElementById("board").innerHTML += '<div class="hide" id="fire"><button class="btn" onclick="">Fire!</button></div>'
-		 	document.getElementById("board").innerHTML += '<div><button class="btn" onclick="gridView(event)">View Salvoes</button></div>'
+		 	document.getElementById('grid-ships').classList.add('active')
+		 	document.getElementById('grid-salvoes').classList.remove('active')
+		 	document.getElementById("board").innerHTML += '<div class="hide" id="fire"><button class="btn" onclick="readyToShoot()">Fire!</button></div>'
+		 	document.getElementById("board").innerHTML += '<div><button id="grid-view" class="btn" onclick="gridView(event)">View Salvoes</button></div>'
+		 	if(!viewShips){
+		 		document.getElementById('grid-view').click()
+		 	}
+		 	target()
 		 } else {
 		 	document.getElementById("board").innerHTML += '<div><button class="btn" onclick="addShips()">Add Ships</button></div>'
 		 	createShips('carrier', 5, 'horizontal', document.getElementById('dock'),false)
@@ -45,23 +51,23 @@ function getGameData(gpId){
 			createShips('submarine', 3, 'horizontal', document.getElementById('dock'),false)
 			createShips('destroyer', 3, 'horizontal', document.getElementById('dock'),false)
 			createShips('patrol_boat', 2, 'horizontal', document.getElementById('dock'),false)
-			
+
 		 }
-		 
+
 		 data.gamePlayer.forEach(e =>{
 		 	if(e.id == gp){
 		 		player = e.player
 		 	} else {
 		 		opponent = e.player
 		 	}
-		 }) 
+		 })
 		 if(data.salvoes.length > 0){
 		 	getSalvoes(data.salvoes, player.id)
 		 }
-		 
 
 
-		 
+
+
 	})
 	.catch(error => console.log(error))
 
@@ -88,17 +94,29 @@ function getSalvoes(salvoes, playerId){
 		salvo.locations.forEach(loc => {
 			if(salvo.player == playerId){
 				let cell = document.getElementById("salvoes"+loc)
-				cell.style.background = "red"
+				salvo.hits.includes(loc) ? cell.classList.add('hit') : cell.classList.add('water')
 				cell.innerText = salvo.turn
 			}else{
 				let cell = document.getElementById("ships"+loc)
 				if(cell.classList.contains('busy-cell')){
 					cell.style.background = "red"
 				}
-				
+
 			}
 		})
-		
+
+		if(salvo.sunken != null){
+			salvo.sunken.forEach(ship => {
+				if(salvo.player == playerId){
+					ship.locations.forEach(loc => {
+						let cell = document.getElementById("salvoes"+loc)
+						cell.classList.add('sunken')
+					})
+				}
+
+			})
+		}
+
 	})
 }
 
@@ -169,36 +187,47 @@ function sendShips(ships,gamePlayerId){
 	})
 	.then(json => {
 
-		getGameData(gp)
+		getGameData(gp,true)
 	})
 	.catch(error => error)
 	.then(error => console.log(error))
 
 }
 
-function shoot(shots, gamePlayerId){
-    let url = '/api/games/players/'+gamePlayerId+'/salvoes'
-    let init = {
-    method: 'POST',
-    headers: {
-        "Content-type":"application/json"
-        },
-    body: JSON.stringify(shots)
-    }
-    fetch(url, init)
-    .then(res => {
-        if(res.ok){
-        return res.json()
-        }else{
-            return Promise.reject(res.json())
-        }
-    })
-    .then(json => {
-        getGameData(gp)
-    })
-    .catch(error=>error)
-    .then(error=> console.log(error))
+function shoot(shots,gamePlayerId){
+	let url = '/api/games/players/'+gamePlayerId+'/salvoes'
+	let init = {
+		method: 'POST',
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(shots)
+	}
+	fetch(url,init)
+	.then(res => {
+		if(res.ok){
+			return res.json()
+		}else{
+			return Promise.reject(res.json())
+		}
+	})
+	.then(json => {
+
+		getGameData(gp,false)
+	})
+	.catch(error => error)
+	.then(error => console.log(error))
+
 }
+
+function readyToShoot(){
+
+	let shots = Array.from(document.querySelectorAll('.target')).map(cell => cell.dataset.y + cell.dataset.x)
+
+	shoot(shots, gp)
+}
+
+
 
 function gridView(ev){
 
@@ -208,4 +237,22 @@ function gridView(ev){
 
 	document.querySelectorAll(".grid").forEach(grid => grid.classList.toggle("active"))
 	document.getElementById("fire").classList.toggle("hide")
+}
+
+function target(){
+	document.querySelectorAll("#grid-salvoes .grid-cell").forEach(cell => cell.addEventListener('click',aim))
+}
+
+function aim(evt){
+	if(!evt.target.classList.contains('hit')){
+		if(document.querySelectorAll('.target').length < 5){
+			evt.target.classList.toggle('target')
+		}else{
+			console.log('too many shots')
+		}
+	} else{
+		console.log('you already have shooted here')
+	}
+
+
 }

@@ -33,10 +33,10 @@ public class GamePlayer {
     private Game game;
 
     @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
-    private List<Ship> ships = new ArrayList<>();
+    private Set<Ship> ships = new HashSet<>();
 
     @OneToMany(mappedBy = "gamePlayer", cascade = CascadeType.ALL)
-    private List<Salvo> salvoes = new ArrayList<Salvo>();
+    private Set<Salvo> salvoes = new HashSet<>();
 
     /*-----
     METODOS
@@ -57,7 +57,6 @@ public class GamePlayer {
         return id;
     }
 
-    //El atributo Id, a mi parecer, no debería tener un set ya que lo genera la DB, pero...
     public void setId(Long id) {
         this.id = id;
     }
@@ -91,7 +90,7 @@ public class GamePlayer {
         ship.setGamePlayer(this);
     }
 
-    public List<Ship> getShips() {
+    public Set<Ship> getShips() {
         return this.ships;
     }
 
@@ -100,8 +99,15 @@ public class GamePlayer {
         salvo.setGamePlayer(this);
     }
 
-    public List<Salvo> getSalvoes() {
+    public Set<Salvo> getSalvoes() {
         return this.salvoes;
+    }
+
+    public GamePlayer getOpponent() {
+        return this.getGame().getGamePlayers()
+                .stream().filter(gp -> gp.getId() != this.getId())
+                .findFirst()
+                .orElse(null);
     }
 
 

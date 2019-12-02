@@ -68,6 +68,7 @@
     font-weight: bold;
     text-align: center;
     align-items: center;
+    
 }
 
 
@@ -221,7 +222,22 @@
     width: inherit;
 }
 
+.target{
+    background-color: purple;
+}
 
+.hit{
+    background-color: red;
+}
+
+.water{
+    background-color: blue;
+}
+
+.hit.sunken{
+    background-color: black;
+    color: white;
+}
 
 
 @media only screen and (min-width: 576px){
