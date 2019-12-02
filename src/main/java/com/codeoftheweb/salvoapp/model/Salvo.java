@@ -22,8 +22,6 @@ public class Salvo {
     private Long id;
     private Integer turn;
 
-    //Esta anotation de LazyCollection es para que funcionen las listas y no tire error de MultipleBagFetchException: cannot simultaneously fetch multiple bags,
-    // además se sacan los fetch type de todos los @*ToMany que se relacionen
     @ElementCollection
     private List<String> locations = new ArrayList<>();
 

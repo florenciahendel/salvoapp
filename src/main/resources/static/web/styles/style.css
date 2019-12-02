@@ -33,7 +33,7 @@
 }
 
 #grid-ships{
-    background-image: url(../assets/ocean.gif);
+    background-image: url(../assets/ocean.jpg);
     background-size: cover;
     border: 2px solid rgb(128,128,128);  
 }

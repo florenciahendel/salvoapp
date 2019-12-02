@@ -69,6 +69,7 @@ var app = new Vue({
             })
             .then((res)=> res)
             .then(json =>{
+
                 app.login(evt)
             })
             .catch((error)=> console.log(error))
