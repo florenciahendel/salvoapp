@@ -223,7 +223,7 @@
 }
 
 .target{
-    background-color: purple;
+    background-color: orange;
 }
 
 .hit{
@@ -231,7 +231,7 @@
 }
 
 .water{
-    background-color: blue;
+    background-color: lightblue;
 }
 
 .hit.sunken{

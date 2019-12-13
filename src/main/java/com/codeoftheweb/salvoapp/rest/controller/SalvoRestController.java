@@ -55,21 +55,6 @@ public class SalvoRestController {
         Map<String, Object> dto = new LinkedHashMap<>();
 
         if (gamePlayer != null) {
-          /*  dto.put("gameId", gamePlayer.getGame().getId());
-              dto.put("gameCreationDate", gamePlayer.getGame().getCreationDate());
-              dto.put("player", gamePlayer.getPlayer().getUserName());
-              dto.put("playersInThisGame", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
-              dto.put("opponent", gamePlayer.getGame().getGamePlayers().stream()
-                    .filter(x -> x.getPlayer().getUserName() != gamePlayer.getPlayer().getUserName())
-                    .map(GamePlayer::gamePlayerUserNameDTO));
-              dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
-              dto.put("salvoes", gamePlayer.getGame().getGamePlayers().stream()
-                    .flatMap(gp -> gp.getSalvoes().stream()
-                            .map(salvo -> salvo.salvoDTO())));
-              dto.put("enemySalvoes", salvoesList(gamePlayer.getGame().getGamePlayers().stream()
-                    .filter(gp -> gp.getId() != gamePlayer.getId()).findFirst()
-                    .orElseThrow(() -> new RuntimeException()).getSalvoes()));
-              */
             dto.put("id",gamePlayer.getGame().getId());
             dto.put("creationDate", gamePlayer.getGame().getCreationDate());
             dto.put("gamePlayer", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
