@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
@@ -110,6 +111,72 @@ public class GamePlayer {
                 .orElse(null);
     }
 
+    public List<Ship> getSunkenShips(Set<Salvo> mySalvoes, Set<Ship> opponentShips) {
+
+        List<String> allShots = new ArrayList<>();
+
+        mySalvoes.forEach(salvo -> allShots.addAll(salvo.getLocations()));
+
+        return opponentShips
+                .stream()
+                .filter(ship -> allShots.containsAll(ship.getLocations()))
+                .collect(Collectors.toList());
+    }
+
+    public enum GameState {
+        UNDEFINED,
+        ENTER_SHIPS,
+        WAIT_OPPONENT,
+        WAIT_OPPONENT_SHIPS,
+        FIRE,
+        WAIT,
+        WON,
+        LOST,
+        TIED
+    }
+
+    public GameState getGameState() {
+        GameState gameState = GameState.UNDEFINED;
+
+        if (this.getShips().size() == 0) {
+            gameState = GameState.ENTER_SHIPS;
+        } else {
+            GamePlayer opponent = this.getOpponent();
+
+            if (opponent == null) {
+                gameState = GameState.WAIT_OPPONENT;
+            } else if (opponent.getShips().size() == 0) {
+                gameState = GameState.WAIT_OPPONENT_SHIPS;
+            } else {
+                boolean firstPlayer = this.getId() < opponent.getId();
+                int myTurn = this.getSalvoes().size() + 1;
+                int opponentTurn = opponent.getSalvoes().size() + 1;
+
+                if (firstPlayer & myTurn == opponentTurn) {
+                    gameState = GameState.FIRE;
+                } else if (!firstPlayer & myTurn < opponentTurn) {
+                    gameState = GameState.FIRE;
+                } else {
+                    gameState = GameState.WAIT;
+                }
+
+                int mySunkenShips = this.getSunkenShips(this.getSalvoes(), opponent.getShips()).size();
+                int opponentSunkenShips = opponent.getSunkenShips(opponent.getSalvoes(), this.getShips()).size();
+
+                if (myTurn == opponentTurn) {
+                    if (mySunkenShips == 5 & opponentSunkenShips < 5) {
+                        gameState = GameState.WON;
+                    } else if (opponentSunkenShips == 5 & mySunkenShips < 5) {
+                        gameState = GameState.LOST;
+                    } else if (opponentSunkenShips == 5 & mySunkenShips == 5) {
+                        gameState = GameState.TIED;
+                    }
+                }
+            }
+        }
+
+        return gameState;
+    }
 
     //DTO (data transfer object) para administrar la info de GamePlayer
     public Map<String, Object> gamePlayerDTO() {

@@ -9,7 +9,7 @@ getGameData(gp,true)
 function getGameData(gpId, viewShips){
 
 	document.getElementById("dock").innerHTML = `<div id="display">
-									                <p>Welcome...</p>
+									                <p>Hi there! </p>
 									            </div>
 									            <div id="board">
 
@@ -237,7 +237,40 @@ function gridView(ev){
 
 	document.querySelectorAll(".grid").forEach(grid => grid.classList.toggle("active"))
 	document.getElementById("fire").classList.toggle("hide")
-}
+
+
+  let timer = setInterval(function() {
+    switch(data.gameState){
+    	case "WAIT_OPPONENT":
+    	document.querySelector("#display").textContent = "Waiting for an opponent";
+    	break;
+    	case "WAIT_OPPONENT_SHIPS":
+        document.querySelector("#display").textContent = "Waiting for rival's ships";
+        break;
+        case "ENTER_SHIPS":
+        document.querySelector("#display").textContent = "Place your ships";
+        break;
+        case "WAIT":
+        document.querySelector("#display").textContent = "Wait, please";
+        break;
+        case "FIRE":
+        document.querySelector("#display").textContent = "Fire!";
+        break;
+        case "WON":
+        document.querySelector("#display").textContent = "You won!";
+        break;
+        case "LOST":
+        document.querySelector("#display").textContent = "You lost!";
+        break;
+        case "TIED":
+        document.querySelector("#display").textContent = "It's a tie!";
+        break;
+
+        }
+
+    }, 100);
+
+    }
 
 function target(){
 	document.querySelectorAll("#grid-salvoes .grid-cell").forEach(cell => cell.addEventListener('click',aim))
@@ -256,3 +289,4 @@ function aim(evt){
 
 
 }
+

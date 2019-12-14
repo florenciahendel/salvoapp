@@ -4,6 +4,7 @@ import com.codeoftheweb.salvoapp.model.*;
 import com.codeoftheweb.salvoapp.repository.GamePlayerRepository;
 import com.codeoftheweb.salvoapp.repository.GameRepository;
 import com.codeoftheweb.salvoapp.repository.PlayerRepository;
+import com.codeoftheweb.salvoapp.repository.ScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,9 @@ public class SalvoRestController {
     private PlayerRepository playerRepository;
 
     @Autowired
+    private ScoreRepository scoreRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     private Set<Map> shipsList(Set<Ship> ships) {
@@ -52,21 +56,25 @@ public class SalvoRestController {
          declara un método para pasarle información que obtiene del GamePlayer que recibe por parámetro,
          y gestiona la respuesta si el GamePLayer no existiera (a través del else)*/
 
+
         Map<String, Object> dto = new LinkedHashMap<>();
 
         if (gamePlayer != null) {
-            dto.put("id",gamePlayer.getGame().getId());
+            dto.put("id", gamePlayer.getGame().getId());
             dto.put("creationDate", gamePlayer.getGame().getCreationDate());
+            dto.put("gameState", gamePlayer.getGameState());
             dto.put("gamePlayer", gamePlayer.getGame().getGamePlayers().stream().map(GamePlayer::gamePlayerDTO));
             dto.put("ships", gamePlayer.getShips().stream().map(Ship::shipDTO));
             dto.put("salvoes", gamePlayer.getGame().getGamePlayers()
                     .stream().flatMap(gp -> gp.getSalvoes()
-                            .stream().map(salvo -> salvo.salvoDTO())));
-
+                            .stream().map(salvo -> salvo.salvoDTO()))
+            );
         } else {
             dto.put("error", "no such game");
         }
+
         return dto;
+
     }
 
     /*    Muestra la información de los juegos:
@@ -220,30 +228,52 @@ public class SalvoRestController {
         return response;
     }
 
-    @RequestMapping(path="/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
+    @RequestMapping(path = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addSalvo(Authentication authentication, @PathVariable long gamePlayerId, @RequestBody List<String> shots){
         ResponseEntity<Map<String,Object>> response;
-        if (isGuest(authentication)){
-            response = new ResponseEntity<>(makeMap("error", "You must be logged in"), HttpStatus.UNAUTHORIZED);
+        if (isGuest(authentication)) {
+            response = new ResponseEntity<>(makeMap("error", "you must be logged in"), HttpStatus.UNAUTHORIZED);
         } else {
             GamePlayer gamePlayer = gamePlayerRepository.findById(gamePlayerId).orElse(null);
             Player player = playerRepository.findPlayerByUserName(authentication.getName());
-            if (gamePlayer==null){
+            if (gamePlayer == null) {
                 response = new ResponseEntity<>(makeMap("error", "no such game"), HttpStatus.NOT_FOUND);
-            }else if (gamePlayer.getPlayer().getId()!=player.getId()) {
-                response = new ResponseEntity<>(makeMap("error", "This is not your game"), HttpStatus.UNAUTHORIZED);
-            } else if (shots.size()!=5){
+            } else if (gamePlayer.getPlayer().getId() != player.getId()) {
+                response = new ResponseEntity<>(makeMap("error", "this is not your game"), HttpStatus.UNAUTHORIZED);
+            } else if (shots.size() != 5) {
                 response = new ResponseEntity<>(makeMap("error", "wrong number of shots"), HttpStatus.FORBIDDEN);
-            }else{
-                int turn = gamePlayer.getSalvoes().size()+1;
-                Salvo salvo = new Salvo(turn, shots);
-                gamePlayer.addSalvo(salvo);
-                gamePlayerRepository.save(gamePlayer);
-                response = new ResponseEntity<>(makeMap("Success", "Salvo added"), HttpStatus.CREATED);
+            } else {
+                GamePlayer.GameState gameState = gamePlayer.getGameState();
+
+                if (!gameState.equals(GamePlayer.GameState.FIRE)) {
+                    response = new ResponseEntity<>(makeMap("error", gamePlayer.getGameState()), HttpStatus.FORBIDDEN);
+                } else {
+                    int turn = gamePlayer.getSalvoes().size() + 1;
+
+                    Salvo salvo = new Salvo(turn, shots);
+                    gamePlayer.addSalvo(salvo);
+
+                    gamePlayerRepository.save(gamePlayer);
+
+                    response = new ResponseEntity<>(makeMap("success", "salvo added"), HttpStatus.CREATED);
+
+                    if (gamePlayer.getGameState().equals(GamePlayer.GameState.WON)) {
+                        scoreRepository.save(new Score(3, gamePlayer.getGame(), gamePlayer.getPlayer(), LocalDateTime.now()));
+                        scoreRepository.save(new Score(0, gamePlayer.getGame(), gamePlayer.getOpponent().getPlayer(), LocalDateTime.now()));
+                    } else if (gamePlayer.getGameState().equals(GamePlayer.GameState.LOST)) {
+                        scoreRepository.save(new Score(0, gamePlayer.getGame(), gamePlayer.getPlayer(), LocalDateTime.now()));
+                        scoreRepository.save(new Score(3, gamePlayer.getGame(), gamePlayer.getOpponent().getPlayer(), LocalDateTime.now()));
+                    } else if (gamePlayer.getGameState().equals(GamePlayer.GameState.TIED)) {
+                        scoreRepository.save(new Score(1, gamePlayer.getGame(), gamePlayer.getPlayer(), LocalDateTime.now()));
+                        scoreRepository.save(new Score(1, gamePlayer.getGame(), gamePlayer.getOpponent().getPlayer(), LocalDateTime.now()));
+                    }
+                }
+
+
             }
         }
 
-    return response;
+        return response;
     }
 
 
@@ -259,7 +289,7 @@ public class SalvoRestController {
                 x = Integer.parseInt(cell.substring(1));
             }catch(NumberFormatException e){
                 x = 99;
-            };
+            }
 
             if(x < 1 || x > 10 || y < 'A' || y > 'J'){
                 return true;
