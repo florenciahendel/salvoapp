@@ -1,3 +1,11 @@
+/*.login-display{
+background-image:url('../assets/main-background.jpg');
+background-repeat:no-repeat;
+}
+*/
+
+
+
 .flex-container{
     display: flex;
     flex-flow: column nowrap;

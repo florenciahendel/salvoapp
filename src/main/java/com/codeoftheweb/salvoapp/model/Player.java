@@ -174,6 +174,8 @@ public class Player {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", this.getId());
         dto.put("username", this.getUserName());
+        dto.put("firstName", this.getFirstName());
+        dto.put("lastName", this.getLastName());
         dto.put("won", cantWon);
         dto.put("lose", cantLose);
         dto.put("tie", cantTie);

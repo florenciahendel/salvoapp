@@ -17,6 +17,14 @@ function getGames(){
 
 getGames()
 
+function mostrar(show, hide){
+var show = document.getElementById(show);
+var hide = document.getElementById(hide);
+
+show.classList.remove('d-none');
+hide.classList.add('d-none');
+}
+
 var app = new Vue({
     el: "#app",
     data: {
@@ -25,6 +33,10 @@ var app = new Vue({
         player: {}
     },
     methods: {
+        	changeDateFormat (dateString){
+    		    return new Date(dateString).toLocaleString();
+    		},
+
         login(evt) {
             evt.preventDefault();
             let formData = new FormData(evt.target)

@@ -1,0 +1,9 @@
+.transparent{
+background-color: rgba(255,217,15,0.7);
+}
+
+.container-fluid{
+background-image: url('../assets/bart.jpg');
+background-size:cover;
+background-repeat:no-repeat;
+}

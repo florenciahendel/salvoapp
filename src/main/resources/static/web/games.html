@@ -5,57 +5,99 @@
     <title>Salvo Games</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/loginStyles.css">
 </head>
 <body>
-<header class="bg-info text-light text-center py-2">
-    <h1>Salvo Games</h1>
+<header class="bg-warning text-light text-center py-4">
+    <h1>The Simpson's Salvo</h1>
 </header>
-<section>
-    <div id="app" class="p-4">
-        <template v-if="player == 'guest'">
-            <h1>Please Login</h1>
-            <form v-on:submit.prevent="login($event)" id="login">
-                <label for="username">Username</label>
-                <input type="text" name="username" placeholder="j.doe@mail.com">
-                <br>
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="******">
-                <br>
-                <button type="submit">Log In</button>
-            </form>
-            <br>
-            <h2>Don't have an account? Create one!</h2>
-            <form v-on:submit.prevent="signup($event)" id="signup">
-                <label for="username">Username</label>
-                <input type="text" name="username" placeholder="j.doe@mail.com">
-                <br>
-                <label for="firstName"> First Name</label>
-                <input type="text" name="firstName" placeholder="John">
-                <br>
-                <label for="lastName">Last Name</label>
-                <input type="text" name="lastName" placeholder="Doe">
-                <br>
-                <label for="password">Password</label>
-                <input type="password" name="password" placeholder="******">
-                <br>
-                <button type="submit">New Account</button>
-                <br>
-            </form>
-        </template>
-        <template v-else>
-            <h1 >Welcome {{player.username}}</h1>
-            <button @click="logout()">Log out</button>
-            <button @click="createGame()">New Game</button>
-        </template>
+<section class="container-fluid">
+    <div id="app" class="p-4 login-display">
+
+        <div class="row mb-5">
+            <template v-if="player == 'guest'">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="card transparent text-center" id="loginCard">
+                        <h5 class="card-header">LOGIN</h5>
+                        <div class="card-body">
+                            <form v-on:submit.prevent="login($event)" id="login">
+                                <div class="form-row">
+                                    <div class="form-group col-lg-6">
+                                        <label for="username">Username</label>
+                                        <input type="text" name="username" class="form-control"
+                                               placeholder="j.doe@mail.com">
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="password" class="form-control"
+                                               placeholder="******">
+                                    </div>
+                                </div>
+                                <button class="btn btn-warning" type="submit">Log In</button>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#signUpCard" onclick="mostrar('signUpCard', 'loginCard')">I'm new</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="card transparent d-none text-center" id="signUpCard">
+                        <h5 class="card-header">NEW ACCOUNT</h5>
+                        <div class="card-body">
+                            <form v-on:submit.prevent="signup($event)" id="signup">
+                                <div class="form-row">
+                                    <div class="form-group col-lg-6">
+                                        <label for="firstName"> First Name</label>
+                                        <input type="text" name="firstName" class="form-control" placeholder="John">
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label for="lastName">Last Name</label>
+                                        <input type="text" name="lastName" class="form-control" placeholder="Doe">
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label for="username">Username</label>
+                                        <input type="text" name="username" class="form-control"
+                                               placeholder="j.doe@mail.com">
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="password" class="form-control"
+                                               placeholder="******">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-warning">New Account</button>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#loginCard" onclick="mostrar('loginCard', 'signUpCard')">I already have an
+                                account</a>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template v-else>
+                <div class="col">
+                    <div class="card text-right border-white">
+                        <div class="card-body">
+                            <h5>Welcome, {{player.firstName}}</h5>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-warning" @click="logout()">Logout</button>
+                                <button type="button" class="btn btn-success" @click="createGame()">New Game</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
 
         <!--Leaderboard-->
-        <div class="row">
-            <div class="col-12 pb-5">
-                <h2>LeaderBoard</h2>
-            </div>
-            <div class="col-12 pb-5">
-                <table class="leaderboard table table-sm table-bordered table-striped text-center">
-                    <tr class="table-dark">
+        <div class="row mb-5 leaderboard">
+            <div class="col-6 offset-3 pb-5">
+                <h2 class="text-center pb-2">LeaderBoard</h2>
+
+                <table class="table table-sm table-bordered table-striped text-center">
+                    <tr class="table-warning">
                         <th>Name</th>
                         <th>Won</th>
                         <th>Tie</th>
@@ -63,7 +105,7 @@
                         <th>Points</th>
                     </tr>
                     <tr v-for="h in leaderboard">
-                        <td>{{ h.username }}</td>
+                        <td>{{ h.firstName }} {{h.lastName}}</td>
                         <td>{{ h.won }}</td>
                         <td>{{ h.tie }}</td>
                         <td>{{ h.lose }}</td>
@@ -71,36 +113,41 @@
                     </tr>
                 </table>
             </div>
-            <!--Lista de juegos-->
-            <div class="row">
-                <div class="col-12 pb-5">
-                    <h2>Game List</h2>
-                </div>
-                <div class="col-12 pb-5">
-                    <ul class="games-list">
-                        <li v-for="game in games" class="pt-2">Game no. {{game.id}} created on
-                            {{game.created}}
-                            <p>Players:</p>
-                            <ul>
-                                <li v-for="gamePlayer in game.gamePlayers">
-                                    {{gamePlayer.player.username}}
-                                    <template v-if="player != 'guest'">
-                                        <template v-if="gamePlayer.player.id == player.id">
-                                            <a :href="'/web/game.html?gp='+gamePlayer.id">Enter</a>
-                                        </template>
-                                        <template v-else-if="game.gamePlayers.length == 1">
-                                            <button @click="joinGame(game.id)">Join</button>
-                                        </template>
-                                    </template>
+        </div>
 
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+        <!--Lista de juegos-->
+
+        <div class="row">
+            <h2 class="text-center pb-2">Games</h2>
+
+            <div class="card-columns">
+                <div class="card" v-for="game in games">
+                    <div class="card-header"><h5>Game {{game.id}}</h5> <small>Created
+                        {{changeDateFormat(game.created)}}</small></div>
+                    <div class="card-body"><h5>Players</h5>
+                        <ul>
+                            <li v-for="gamePlayer in game.gamePlayers">{{gamePlayer.player.firstName}}
+                                {{gamePlayer.player.lastName}}
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <template v-for="gamePlayer in game.gamePlayers">
+                            <template v-if="player != 'guest'">
+                                <template v-if="gamePlayer.player.id == player.id">
+                                    <a class="btn btn-primary" :href="'/web/game.html?gp='+gamePlayer.id">Enter</a>
+
+                                </template>
+                                <template v-else-if="game.gamePlayers.length == 1">
+                                    <button class="btn btn-primary" @click="joinGame(game.id)">Join</button>
+                                </template>
+                            </template>
+                        </template>
+                    </div>
+
                 </div>
             </div>
-
-
         </div>
     </div>
 </section>
